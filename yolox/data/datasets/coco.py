@@ -6,6 +6,7 @@ import os
 from loguru import logger
 
 import cv2
+import PIL.Image as Image
 import numpy as np
 from pycocotools.coco import COCO
 
@@ -190,7 +191,9 @@ class COCODataset(Dataset):
 
         img_file = os.path.join(self.data_dir, self.name, file_name)
 
-        img = cv2.imread(img_file)
+        #img = cv2.imread(img_file,flags=cv2.IMREAD_COLOR)
+        img = Image.open(img_file)
+        img = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
         assert img is not None
 
         return img

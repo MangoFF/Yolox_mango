@@ -4,6 +4,7 @@ class Exp(MyExp):
     def __init__(self):
         super(Exp, self).__init__()
         self.data_dir="datasets/COCO/"
+        self.num_classes=10
     def get_model(self):
         from yolox.utils import freeze_module
         model = super().get_model()
