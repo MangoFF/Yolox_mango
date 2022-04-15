@@ -182,6 +182,36 @@ class Predictor(object):
 
         vis_res = vis(img, bboxes, scores, cls, cls_conf, self.cls_names)
         return vis_res
+    def inferenceImg(self,img):
+        img_info = {"id": 0}
+        height, width = img.shape[:2]
+        img_info["height"] = height
+        img_info["width"] = width
+        img_info["raw_img"] = img
+
+        ratio = min(self.test_size[0] / img.shape[0], self.test_size[1] / img.shape[1])
+        img_info["ratio"] = ratio
+
+        img, _ = self.preproc(img, None, self.test_size)
+        img = torch.from_numpy(img).unsqueeze(0)
+        img = img.float()
+        if self.device == "gpu":
+            img = img.cuda()
+            if self.fp16:
+                img = img.half()  # to FP16
+
+        with torch.no_grad():
+            t0 = time.time()
+            outputs = self.model(img)
+            if self.decoder is not None:
+                outputs = self.decoder(outputs, dtype=outputs.type())
+            outputs = postprocess(
+                outputs, self.num_classes, self.confthre,
+                self.nmsthre, class_agnostic=True
+            )
+            logger.info("Infer time: {:.4f}s".format(time.time() - t0))
+        return outputs, img_info
+
 
 
 def image_demo(predictor, vis_folder, path, current_time, save_result):
