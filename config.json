@@ -1,6 +1,6 @@
 {
     "model_type": "PyTorch",
-    "runtime": "python3.7",
+    "runtime": "python3.6",
     "model_algorithm": "object_detection",
     "metrics": {
         "f1": 0.0,
