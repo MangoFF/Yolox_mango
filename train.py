@@ -29,26 +29,16 @@ class Exp(MyExp):
         super(Exp, self).__init__()
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
         self.data_dir="/home/ma-user/modelarts/user-job-dir/model/datasets/COCO/"
+        #self.data_dir = "datasets/COCO/"
         self.output_dir = output_dir
         #yolox_s 不用很大的模型
         self.depth = 0.33
         self.width = 0.50
         self.num_classes=10
-        #慢启动预热网络
-        self.warmup_epochs = 2
-        #针对每张图片的basic learn rate
-        self.basic_lr_per_img = 0.01 / 64.0#64*5
-        self.max_epoch = 50
-        #最后两个epoch不进行数据增强
-        self.no_aug_epochs = 5
-        #每隔5个epch验证一次
-        self.eval_interval = 10
-        #不让他变化尺寸，似乎不太好，还是设置成1把
-        self.multiscale_range = 2
     def get_model(self):
         from yolox.utils import freeze_module
         model = super().get_model()
-        freeze_module(model.backbone.backbone)
+        #freeze_module(model.backbone.backbone)
         return model
 
 def make_parser():
@@ -66,7 +56,7 @@ def make_parser():
         type=str,
         help="url used to set up distributed training",
     )
-    parser.add_argument("-b", "--batch-size", type=int, default=512, help="batch size")
+    parser.add_argument("-b", "--batch-size", type=int, default=64, help="batch size")
     parser.add_argument(
         "-d", "--devices", type=int, default=1, help="device for training"
     )
