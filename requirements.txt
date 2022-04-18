@@ -1,6 +1,6 @@
 # TODO: Update with exact module version
+pip==21.2.4
 numpy
-torch>=1.7
 opencv_python
 loguru
 scikit-image
@@ -15,6 +15,3 @@ tensorboard
 # verified versions
 # pycocotools corresponds to https://github.com/ppwwyyxx/cocoapi
 pycocotools>=2.0.2
-onnx==1.8.1
-onnxruntime==1.8.0
-onnx-simplifier==0.3.5

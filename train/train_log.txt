@@ -1,0 +1,444 @@
+2022-04-18 19:03:10.465 | INFO     | yolox.core.trainer:before_train:129 - args: Namespace(batch_size=256, cache=True, ckpt='/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth', devices=1, dist_backend='nccl', dist_url=None, exp_file='exps/example/yolo_mango.py ', experiment_name='train', fp16=True, logger='tensorboard', machine_rank=0, model='mango', name=None, num_machines=1, occupy=True, opts=[], resume=False, start_epoch=None)
+2022-04-18 19:03:10.466 | INFO     | yolox.core.trainer:before_train:130 - exp value:
+╒═══════════════════╤═════════════════════════════════════════════════════════════╕
+│ keys              │ values                                                      │
+╞═══════════════════╪═════════════════════════════════════════════════════════════╡
+│ seed              │ None                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ output_dir        │ ''                                                          │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ print_interval    │ 10                                                          │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ eval_interval     │ 10                                                          │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ num_classes       │ 10                                                          │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ depth             │ 0.33                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ width             │ 0.5                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ act               │ 'silu'                                                      │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ data_num_workers  │ 4                                                           │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ input_size        │ (640, 640)                                                  │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ multiscale_range  │ 1                                                           │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ data_dir          │ '/home/ma-user/modelarts/user-job-dir/model/datasets/COCO/' │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ train_ann         │ 'instances_train2017.json'                                  │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ val_ann           │ 'instances_val2017.json'                                    │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ test_ann          │ 'instances_test2017.json'                                   │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ mosaic_prob       │ 1.0                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ mixup_prob        │ 1.0                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ hsv_prob          │ 1.0                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ flip_prob         │ 0.5                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ degrees           │ 10.0                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ translate         │ 0.1                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ mosaic_scale      │ (0.1, 2)                                                    │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ enable_mixup      │ True                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ mixup_scale       │ (0.5, 1.5)                                                  │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ shear             │ 2.0                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ warmup_epochs     │ 2                                                           │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ max_epoch         │ 50                                                          │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ warmup_lr         │ 0                                                           │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ min_lr_ratio      │ 0.05                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ basic_lr_per_img  │ 3.90625e-05                                                 │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ scheduler         │ 'yoloxwarmcos'                                              │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ no_aug_epochs     │ 5                                                           │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ ema               │ True                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ weight_decay      │ 0.0005                                                      │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ momentum          │ 0.9                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ save_history_ckpt │ True                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ exp_name          │ 'train'                                                     │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ test_size         │ (640, 640)                                                  │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ test_conf         │ 0.01                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ nmsthre           │ 0.65                                                        │
+╘═══════════════════╧═════════════════════════════════════════════════════════════╛
+2022-04-18 19:03:10.608 | INFO     | yolox.core.trainer:before_train:136 - Model Summary: Params: 8.94M, Gflops: 26.65
+2022-04-18 19:03:11.780 | INFO     | yolox.core.trainer:resume_train:307 - loading checkpoint for fine tuning
+2022-04-18 19:03:11.781 | ERROR    | yolox.core.launch:launch:98 - An error has been caught in function 'launch', process 'MainProcess' (24008), thread 'MainThread' (26724):
+Traceback (most recent call last):
+
+  File "C:/Users/93911/Desktop/com/yolox/YOLOX/train.py", line 182, in <module>
+    args=(exp, args),
+          │    └ Namespace(batch_size=256, cache=True, ckpt='/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth', devices=1, dist_bac...
+          └ ╒═══════════════════╤════════════════════════════════════════════════════════════════════════════════════════════════════════...
+
+> File "C:\Users\93911\Desktop\com\yolox\YOLOX\yolox\core\launch.py", line 98, in launch
+    main_func(*args)
+    │          └ (╒═══════════════════╤═══════════════════════════════════════════════════════════════════════════════════════════════════════...
+    └ <function main at 0x00000235FBFEE318>
+
+  File "C:/Users/93911/Desktop/com/yolox/YOLOX/train.py", line 159, in main
+    trainer.train()
+    │       └ <function Trainer.train at 0x00000235FBCBF048>
+    └ <yolox.core.trainer.Trainer object at 0x00000235FBFF3988>
+
+  File "C:\Users\93911\Desktop\com\yolox\YOLOX\yolox\core\trainer.py", line 73, in train
+    self.before_train()
+    │    └ <function Trainer.before_train at 0x00000235FBFA4798>
+    └ <yolox.core.trainer.Trainer object at 0x00000235FBFF3988>
+
+  File "C:\Users\93911\Desktop\com\yolox\YOLOX\yolox\core\trainer.py", line 144, in before_train
+    model = self.resume_train(model)
+            │    │            └ YOLOX(
+            │    │                (backbone): YOLOPAFPN(
+            │    │                  (backbone): CSPDarknet(
+            │    │                    (stem): Focus(
+            │    │                      (conv): BaseConv(
+            │    │                        (conv): ...
+            │    └ <function Trainer.resume_train at 0x00000235FBFDA168>
+            └ <yolox.core.trainer.Trainer object at 0x00000235FBFF3988>
+
+  File "C:\Users\93911\Desktop\com\yolox\YOLOX\yolox\core\trainer.py", line 309, in resume_train
+    ckpt = torch.load(ckpt_file, map_location=self.device)["model"]
+           │     │    │                       │    └ 'cuda:0'
+           │     │    │                       └ <yolox.core.trainer.Trainer object at 0x00000235FBFF3988>
+           │     │    └ '/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth'
+           │     └ <function load at 0x00000235DBAD3558>
+           └ <module 'torch' from 'D:\\environment\\conda\\envs\\npl\\lib\\site-packages\\torch\\__init__.py'>
+
+  File "D:\environment\conda\envs\npl\lib\site-packages\torch\serialization.py", line 579, in load
+    with _open_file_like(f, 'rb') as opened_file:
+         │               └ '/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth'
+         └ <function _open_file_like at 0x00000235DBACD948>
+
+  File "D:\environment\conda\envs\npl\lib\site-packages\torch\serialization.py", line 230, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+           │          │               └ 'rb'
+           │          └ '/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth'
+           └ <class 'torch.serialization._open_file'>
+
+  File "D:\environment\conda\envs\npl\lib\site-packages\torch\serialization.py", line 211, in __init__
+    super(_open_file, self).__init__(open(name, mode))
+          │           │                   │     └ 'rb'
+          │           │                   └ '/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth'
+          │           └ <torch.serialization._open_file object at 0x00000235FBF07988>
+          └ <class 'torch.serialization._open_file'>
+
+FileNotFoundError: [Errno 2] No such file or directory: '/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth'
+2022-04-18 19:03:29.908 | INFO     | yolox.core.trainer:before_train:129 - args: Namespace(batch_size=256, cache=True, ckpt='/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth', devices=1, dist_backend='nccl', dist_url=None, exp_file='exps/example/yolo_mango.py ', experiment_name='train', fp16=True, logger='tensorboard', machine_rank=0, model='mango', name=None, num_machines=1, occupy=True, opts=[], resume=False, start_epoch=None)
+2022-04-18 19:03:29.910 | INFO     | yolox.core.trainer:before_train:130 - exp value:
+╒═══════════════════╤═════════════════════════════════════════════════════════════╕
+│ keys              │ values                                                      │
+╞═══════════════════╪═════════════════════════════════════════════════════════════╡
+│ seed              │ None                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ output_dir        │ ''                                                          │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ print_interval    │ 10                                                          │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ eval_interval     │ 10                                                          │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ num_classes       │ 10                                                          │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ depth             │ 0.33                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ width             │ 0.5                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ act               │ 'silu'                                                      │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ data_num_workers  │ 4                                                           │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ input_size        │ (640, 640)                                                  │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ multiscale_range  │ 1                                                           │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ data_dir          │ '/home/ma-user/modelarts/user-job-dir/model/datasets/COCO/' │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ train_ann         │ 'instances_train2017.json'                                  │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ val_ann           │ 'instances_val2017.json'                                    │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ test_ann          │ 'instances_test2017.json'                                   │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ mosaic_prob       │ 1.0                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ mixup_prob        │ 1.0                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ hsv_prob          │ 1.0                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ flip_prob         │ 0.5                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ degrees           │ 10.0                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ translate         │ 0.1                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ mosaic_scale      │ (0.1, 2)                                                    │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ enable_mixup      │ True                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ mixup_scale       │ (0.5, 1.5)                                                  │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ shear             │ 2.0                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ warmup_epochs     │ 2                                                           │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ max_epoch         │ 50                                                          │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ warmup_lr         │ 0                                                           │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ min_lr_ratio      │ 0.05                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ basic_lr_per_img  │ 3.90625e-05                                                 │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ scheduler         │ 'yoloxwarmcos'                                              │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ no_aug_epochs     │ 5                                                           │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ ema               │ True                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ weight_decay      │ 0.0005                                                      │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ momentum          │ 0.9                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ save_history_ckpt │ True                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ exp_name          │ 'train'                                                     │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ test_size         │ (640, 640)                                                  │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ test_conf         │ 0.01                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ nmsthre           │ 0.65                                                        │
+╘═══════════════════╧═════════════════════════════════════════════════════════════╛
+2022-04-18 19:03:30.061 | INFO     | yolox.core.trainer:before_train:136 - Model Summary: Params: 8.94M, Gflops: 26.65
+2022-04-18 19:03:31.228 | INFO     | yolox.core.trainer:resume_train:307 - loading checkpoint for fine tuning
+2022-04-18 19:03:31.229 | ERROR    | yolox.core.launch:launch:98 - An error has been caught in function 'launch', process 'MainProcess' (13136), thread 'MainThread' (29556):
+Traceback (most recent call last):
+
+  File "C:/Users/93911/Desktop/com/yolox/YOLOX/train.py", line 182, in <module>
+    args=(exp, args),
+          │    └ Namespace(batch_size=256, cache=True, ckpt='/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth', devices=1, dist_bac...
+          └ ╒═══════════════════╤════════════════════════════════════════════════════════════════════════════════════════════════════════...
+
+> File "C:\Users\93911\Desktop\com\yolox\YOLOX\yolox\core\launch.py", line 98, in launch
+    main_func(*args)
+    │          └ (╒═══════════════════╤═══════════════════════════════════════════════════════════════════════════════════════════════════════...
+    └ <function main at 0x0000021FE92AF288>
+
+  File "C:/Users/93911/Desktop/com/yolox/YOLOX/train.py", line 158, in main
+    trainer.train()
+    │       └ <function Trainer.train at 0x0000021FE8F845E8>
+    └ <yolox.core.trainer.Trainer object at 0x0000021FE925C348>
+
+  File "C:\Users\93911\Desktop\com\yolox\YOLOX\yolox\core\trainer.py", line 73, in train
+    self.before_train()
+    │    └ <function Trainer.before_train at 0x0000021FE9265708>
+    └ <yolox.core.trainer.Trainer object at 0x0000021FE925C348>
+
+  File "C:\Users\93911\Desktop\com\yolox\YOLOX\yolox\core\trainer.py", line 144, in before_train
+    model = self.resume_train(model)
+            │    │            └ YOLOX(
+            │    │                (backbone): YOLOPAFPN(
+            │    │                  (backbone): CSPDarknet(
+            │    │                    (stem): Focus(
+            │    │                      (conv): BaseConv(
+            │    │                        (conv): ...
+            │    └ <function Trainer.resume_train at 0x0000021FE929A0D8>
+            └ <yolox.core.trainer.Trainer object at 0x0000021FE925C348>
+
+  File "C:\Users\93911\Desktop\com\yolox\YOLOX\yolox\core\trainer.py", line 309, in resume_train
+    ckpt = torch.load(ckpt_file, map_location=self.device)["model"]
+           │     │    │                       │    └ 'cuda:0'
+           │     │    │                       └ <yolox.core.trainer.Trainer object at 0x0000021FE925C348>
+           │     │    └ '/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth'
+           │     └ <function load at 0x0000021FC8DA34C8>
+           └ <module 'torch' from 'D:\\environment\\conda\\envs\\npl\\lib\\site-packages\\torch\\__init__.py'>
+
+  File "D:\environment\conda\envs\npl\lib\site-packages\torch\serialization.py", line 579, in load
+    with _open_file_like(f, 'rb') as opened_file:
+         │               └ '/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth'
+         └ <function _open_file_like at 0x0000021FC8D9D8B8>
+
+  File "D:\environment\conda\envs\npl\lib\site-packages\torch\serialization.py", line 230, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+           │          │               └ 'rb'
+           │          └ '/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth'
+           └ <class 'torch.serialization._open_file'>
+
+  File "D:\environment\conda\envs\npl\lib\site-packages\torch\serialization.py", line 211, in __init__
+    super(_open_file, self).__init__(open(name, mode))
+          │           │                   │     └ 'rb'
+          │           │                   └ '/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth'
+          │           └ <torch.serialization._open_file object at 0x0000021FE92E5D88>
+          └ <class 'torch.serialization._open_file'>
+
+FileNotFoundError: [Errno 2] No such file or directory: '/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth'
+2022-04-18 19:04:48.246 | INFO     | yolox.core.trainer:before_train:129 - args: Namespace(batch_size=256, cache=True, ckpt='/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth', devices=1, dist_backend='nccl', dist_url=None, exp_file='exps/example/yolo_mango.py ', experiment_name='train', fp16=True, logger='tensorboard', machine_rank=0, model='', name=None, num_machines=1, occupy=True, opts=[], resume=False, start_epoch=None)
+2022-04-18 19:04:48.247 | INFO     | yolox.core.trainer:before_train:130 - exp value:
+╒═══════════════════╤═════════════════════════════════════════════════════════════╕
+│ keys              │ values                                                      │
+╞═══════════════════╪═════════════════════════════════════════════════════════════╡
+│ seed              │ None                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ output_dir        │ ''                                                          │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ print_interval    │ 10                                                          │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ eval_interval     │ 10                                                          │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ num_classes       │ 10                                                          │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ depth             │ 0.33                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ width             │ 0.5                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ act               │ 'silu'                                                      │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ data_num_workers  │ 4                                                           │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ input_size        │ (640, 640)                                                  │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ multiscale_range  │ 1                                                           │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ data_dir          │ '/home/ma-user/modelarts/user-job-dir/model/datasets/COCO/' │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ train_ann         │ 'instances_train2017.json'                                  │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ val_ann           │ 'instances_val2017.json'                                    │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ test_ann          │ 'instances_test2017.json'                                   │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ mosaic_prob       │ 1.0                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ mixup_prob        │ 1.0                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ hsv_prob          │ 1.0                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ flip_prob         │ 0.5                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ degrees           │ 10.0                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ translate         │ 0.1                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ mosaic_scale      │ (0.1, 2)                                                    │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ enable_mixup      │ True                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ mixup_scale       │ (0.5, 1.5)                                                  │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ shear             │ 2.0                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ warmup_epochs     │ 2                                                           │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ max_epoch         │ 50                                                          │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ warmup_lr         │ 0                                                           │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ min_lr_ratio      │ 0.05                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ basic_lr_per_img  │ 3.90625e-05                                                 │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ scheduler         │ 'yoloxwarmcos'                                              │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ no_aug_epochs     │ 5                                                           │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ ema               │ True                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ weight_decay      │ 0.0005                                                      │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ momentum          │ 0.9                                                         │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ save_history_ckpt │ True                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ exp_name          │ 'train'                                                     │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ test_size         │ (640, 640)                                                  │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ test_conf         │ 0.01                                                        │
+├───────────────────┼─────────────────────────────────────────────────────────────┤
+│ nmsthre           │ 0.65                                                        │
+╘═══════════════════╧═════════════════════════════════════════════════════════════╛
+2022-04-18 19:04:48.386 | INFO     | yolox.core.trainer:before_train:136 - Model Summary: Params: 8.94M, Gflops: 26.65
+2022-04-18 19:04:49.562 | INFO     | yolox.core.trainer:resume_train:307 - loading checkpoint for fine tuning
+2022-04-18 19:04:49.562 | ERROR    | yolox.core.launch:launch:98 - An error has been caught in function 'launch', process 'MainProcess' (10780), thread 'MainThread' (23432):
+Traceback (most recent call last):
+
+  File "C:/Users/93911/Desktop/com/yolox/YOLOX/train.py", line 182, in <module>
+    args=(exp, args),
+          │    └ Namespace(batch_size=256, cache=True, ckpt='/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth', devices=1, dist_bac...
+          └ ╒═══════════════════╤════════════════════════════════════════════════════════════════════════════════════════════════════════...
+
+> File "C:\Users\93911\Desktop\com\yolox\YOLOX\yolox\core\launch.py", line 98, in launch
+    main_func(*args)
+    │          └ (╒═══════════════════╤═══════════════════════════════════════════════════════════════════════════════════════════════════════...
+    └ <function main at 0x0000023693D8F288>
+
+  File "C:/Users/93911/Desktop/com/yolox/YOLOX/train.py", line 158, in main
+    trainer.train()
+    │       └ <function Trainer.train at 0x0000023693A355E8>
+    └ <yolox.core.trainer.Trainer object at 0x0000023693D939C8>
+
+  File "C:\Users\93911\Desktop\com\yolox\YOLOX\yolox\core\trainer.py", line 73, in train
+    self.before_train()
+    │    └ <function Trainer.before_train at 0x0000023693D35708>
+    └ <yolox.core.trainer.Trainer object at 0x0000023693D939C8>
+
+  File "C:\Users\93911\Desktop\com\yolox\YOLOX\yolox\core\trainer.py", line 144, in before_train
+    model = self.resume_train(model)
+            │    │            └ YOLOX(
+            │    │                (backbone): YOLOPAFPN(
+            │    │                  (backbone): CSPDarknet(
+            │    │                    (stem): Focus(
+            │    │                      (conv): BaseConv(
+            │    │                        (conv): ...
+            │    └ <function Trainer.resume_train at 0x0000023693D7A0D8>
+            └ <yolox.core.trainer.Trainer object at 0x0000023693D939C8>
+
+  File "C:\Users\93911\Desktop\com\yolox\YOLOX\yolox\core\trainer.py", line 309, in resume_train
+    ckpt = torch.load(ckpt_file, map_location=self.device)["model"]
+           │     │    │                       │    └ 'cuda:0'
+           │     │    │                       └ <yolox.core.trainer.Trainer object at 0x0000023693D939C8>
+           │     │    └ '/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth'
+           │     └ <function load at 0x00000236FFB734C8>
+           └ <module 'torch' from 'D:\\environment\\conda\\envs\\npl\\lib\\site-packages\\torch\\__init__.py'>
+
+  File "D:\environment\conda\envs\npl\lib\site-packages\torch\serialization.py", line 579, in load
+    with _open_file_like(f, 'rb') as opened_file:
+         │               └ '/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth'
+         └ <function _open_file_like at 0x00000236F363C8B8>
+
+  File "D:\environment\conda\envs\npl\lib\site-packages\torch\serialization.py", line 230, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+           │          │               └ 'rb'
+           │          └ '/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth'
+           └ <class 'torch.serialization._open_file'>
+
+  File "D:\environment\conda\envs\npl\lib\site-packages\torch\serialization.py", line 211, in __init__
+    super(_open_file, self).__init__(open(name, mode))
+          │           │                   │     └ 'rb'
+          │           │                   └ '/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth'
+          │           └ <torch.serialization._open_file object at 0x0000023693D93788>
+          └ <class 'torch.serialization._open_file'>
+
+FileNotFoundError: [Errno 2] No such file or directory: '/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_s.pth'
