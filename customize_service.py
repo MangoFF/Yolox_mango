@@ -108,8 +108,11 @@ def get_model(model_path, **kwargs):
 
     model.eval()
     predictor = Predictor(
-        model, exp, COCO_CLASSES, None, None,
-        device, False, False,
+        model, exp, COCO_CLASSES, trt_file=None,
+        decoder=None,
+        device=device,
+        fp16=False,
+        legacy=False,
     )
     return predictor
 
