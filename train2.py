@@ -27,17 +27,17 @@ from yolox.exp import Exp as MyExp
 class Exp(MyExp):
     def __init__(self,output_dir):
         super(Exp, self).__init__()
-        self.exp_name = "yolox_x_s480_lrd10_mp75w10n5"
-        # self.data_dir="datasets/COCO/"
+        self.exp_name = "yolox_l_s480_lrd10_mp75w10n5"
+        #self.data_dir="datasets/COCO/"
         self.data_dir = "/home/ma-user/modelarts/user-job-dir/model/datasets/COCO/"
         self.output_dir = output_dir
         # yolox_l 不用很大的模型
-        self.depth = 1.33
-        self.width = 1.25
+        self.depth = 1
+        self.width = 1
         self.input_size = (480, 480)
         self.test_size = (480, 480)
         self.basic_lr_per_img = 0.01 / 640.0
-        self.max_epoch = 75
+        self.max_epoch = 100
         self.warmup_epochs = 10
         self.no_aug_epochs = 5
         self.num_classes = 10
@@ -78,8 +78,8 @@ def make_parser():
     parser.add_argument(
         "--resume", default=True, action="store_true", help="resume training"
     )
-    #parser.add_argument("-c", "--ckpt", default="/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_x.ckpt", type=str, help="checkpoint file")
-    parser.add_argument("-c", "--ckpt", default="/home/ma-user/modelarts/user-job-dir/model/ckpt/latest_ckpt1.ckpt",type=str, help="checkpoint file")
+    #parser.add_argument("-c", "--ckpt", default="/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_l.ckpt", type=str, help="checkpoint file")
+    parser.add_argument("-c", "--ckpt", default="/home/ma-user/modelarts/user-job-dir/model/ckpt/latest_ckpt2.ckpt",type=str, help="checkpoint file")
     parser.add_argument(
         "-e",
         "--start_epoch",

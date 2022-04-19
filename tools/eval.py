@@ -15,7 +15,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from yolox.core import launch
 from yolox.exp import get_exp
 from yolox.utils import configure_nccl, fuse_model, get_local_rank, get_model_info, setup_logger
-
+from yolox.exp import Exp as MyExp
 
 def make_parser():
     parser = argparse.ArgumentParser("YOLOX Eval")
@@ -32,9 +32,9 @@ def make_parser():
         type=str,
         help="url used to set up distributed training",
     )
-    parser.add_argument("-b", "--batch-size", type=int, default=64, help="batch size")
+    parser.add_argument("-b", "--batch-size", type=int, default=1, help="batch size")
     parser.add_argument(
-        "-d", "--devices", default=None, type=int, help="device for training"
+        "-d", "--devices", default=1, type=int, help="device for training"
     )
     parser.add_argument(
         "--num_machines", default=1, type=int, help="num of node for training"
@@ -49,10 +49,10 @@ def make_parser():
         type=str,
         help="pls input your expriment description file",
     )
-    parser.add_argument("-c", "--ckpt", default=None, type=str, help="ckpt for eval")
-    parser.add_argument("--conf", default=None, type=float, help="test conf")
-    parser.add_argument("--nms", default=None, type=float, help="test nms threshold")
-    parser.add_argument("--tsize", default=None, type=int, help="test img size")
+    parser.add_argument("-c", "--ckpt", default="best_ckpt.pth", type=str, help="ckpt for eval")
+    parser.add_argument("--conf", type=float, help="test conf")
+    parser.add_argument("--nms", type=float, help="test nms threshold")
+    parser.add_argument("--tsize", type=int, help="test img size")
     parser.add_argument("--seed", default=None, type=int, help="eval seed")
     parser.add_argument(
         "--fp16",
@@ -104,7 +104,31 @@ def make_parser():
     )
     return parser
 
-
+class Exp(MyExp):
+    def __init__(self,output_dir):
+        super(Exp, self).__init__()
+        self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
+        self.data_dir="datasets/COCO/"
+        #self.data_dir = "datasets/COCO/"
+        self.output_dir = output_dir
+        #yolox_l 不用很大的模型
+        self.depth = 0.67
+        self.width = 0.75
+        self.input_size = (480, 480)
+        self.test_size = (480, 480)
+        self.basic_lr_per_img = 0.01 / 320.0
+        self.max_epoch = 75
+        self.warmup_epochs = 5
+        self.no_aug_epochs = 5
+        self.num_classes = 10
+        self.test_conf = 0.2
+        # nms threshold
+        self.nmsthre = 0.45
+    def get_model(self):
+        from yolox.utils import freeze_module
+        model = super().get_model()
+        #freeze_module(model.backbone.backbone)
+        return model
 @logger.catch
 def main(exp, args, num_gpu):
     if args.seed is not None:
@@ -191,7 +215,8 @@ def main(exp, args, num_gpu):
 
 if __name__ == "__main__":
     args = make_parser().parse_args()
-    exp = get_exp(args.exp_file, args.name)
+    #exp = get_exp(args.exp_file, args.name)
+    exp=Exp("YOLOX_out")
     exp.merge(args.opts)
 
     if not args.experiment_name:

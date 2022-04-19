@@ -2,7 +2,7 @@
 """
 """
 from model_service.pytorch_model_service import PTServingBaseService
-
+from yolox.exp import Exp as MyExp
 import argparse
 from PIL import Image
 import numpy as np
@@ -81,24 +81,34 @@ def make_parser():
         help="Using TensorRT model for testing.",
     )
     return parser
-
+class Exp(MyExp):
+    def __init__(self):
+        super(Exp, self).__init__()
+        self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
+        self.data_dir="datasets/COCO/"
+        #self.data_dir = "datasets/COCO/"
+        self.depth = 0.67
+        self.width = 0.75
+        self.input_size = (480, 480)
+        self.test_size = (480, 480)
+        self.num_classes=10
+        self.test_conf = 0.2
+        # nms threshold
+        self.nmsthre = 0.45
+    def get_model(self):
+        from yolox.utils import freeze_module
+        model = super().get_model()
+        #freeze_module(model.backbone.backbone)
+        return model
 def get_model(model_path, **kwargs):
-    batch_size = 1
-
-    save_dir = ''
 
     if torch.cuda.is_available():
         device = torch.device('cuda')
 
     else:
         device = torch.device('cpu')
-    dir_path = os.path.dirname(os.path.realpath(model_path))
-    exp = get_exp(os.path.join(dir_path, "exps/example/yolo_mango.py"), "yolox_x")
+    exp = Exp()
     model = exp.get_model()
-    logger.info(
-        "Model Summary: {}".format(get_model_info(model, (640, 640)))
-    )
-
     ckpt_file = model_path
     logger.info("loading checkpoint")
     ckpt = torch.load(ckpt_file, map_location="cpu")
@@ -111,7 +121,7 @@ def get_model(model_path, **kwargs):
         model, exp, COCO_CLASSES, trt_file=None,
         decoder=None,
         device=device,
-        fp16=False,
+        fp16=True,
         legacy=False,
     )
     return predictor
