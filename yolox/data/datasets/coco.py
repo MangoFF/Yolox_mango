@@ -9,7 +9,6 @@ import cv2
 import PIL.Image as Image
 import numpy as np
 from pycocotools.coco import COCO
-
 from ..dataloading import get_yolox_datadir
 from .datasets_wrapper import Dataset
 
@@ -33,19 +32,39 @@ def remove_useless_info(coco):
                 anno.pop("segmentation", None)
 
 
+def ImageEnhance(org, contrast, sharpness):
+	"""
+	图像增强之亮度、对比度与饱和度调整
+	:param imageFilePath: 图像文件路径
+	:param bright: 亮度
+	:param contrast: 对比度
+	:param color: 饱和度
+	:param sharpness: 清晰度
+	:param saveFolderPath: 结果保存路径
+	:return:
+	"""
+	from PIL import Image, ImageEnhance,ImageFilter
+	SharpnessEnhancer = ImageEnhance.Sharpness(org)
+	imageSharpness = SharpnessEnhancer.enhance(sharpness)
+	# 对比度调整
+	contrastEnhancer = ImageEnhance.Contrast(imageSharpness)
+	imageContrast = contrastEnhancer.enhance(contrast)
+	return imageContrast
+
+
 class COCODataset(Dataset):
     """
     COCO dataset class.
     """
 
     def __init__(
-        self,
-        data_dir=None,
-        json_file="instances_train2017.json",
-        name="train2017",
-        img_size=(416, 416),
-        preproc=None,
-        cache=False,
+            self,
+            data_dir=None,
+            json_file="instances_train2017.json",
+            name="train2017",
+            img_size=(416, 416),
+            preproc=None,
+            cache=False,
     ):
         """
         COCO dataset initialization. Annotation data are read into memory by COCO API.
@@ -191,8 +210,9 @@ class COCODataset(Dataset):
 
         img_file = os.path.join(self.data_dir, self.name, file_name)
 
-        #img = cv2.imread(img_file,flags=cv2.IMREAD_COLOR)
-        img = Image.open(img_file)
+        # img = cv2.imread(img_file,flags=cv2.IMREAD_COLOR)
+        img = Image.open(img_file).convert('RGB')
+        #img=ImageEnhance(img, contrast=2, sharpness=2)
         img = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
         assert img is not None
 

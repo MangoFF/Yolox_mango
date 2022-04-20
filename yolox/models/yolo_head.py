@@ -13,7 +13,6 @@ from yolox.utils import bboxes_iou, meshgrid
 
 from .losses import IOUloss
 from .network_blocks import BaseConv, DWConv
-from mmcv.ops.focal_loss import SigmoidFocalLoss
 
 class YOLOXHead(nn.Module):
     def __init__(
@@ -124,8 +123,8 @@ class YOLOXHead(nn.Module):
 
         self.use_l1 = False
         self.l1_loss = nn.L1Loss(reduction="none")
-
-        #self.bcewithlog_loss = SigmoidFocalLoss(gamma=2,alpha=0.25,reduction="none")
+        #要换的话取配置文件里面换
+        self.new_loss = nn.BCEWithLogitsLoss(reduction="none")
         self.bcewithlog_loss = nn.BCEWithLogitsLoss(reduction="none")
         self.iou_loss = IOUloss(reduction="none")
         self.strides = strides
@@ -397,7 +396,7 @@ class YOLOXHead(nn.Module):
             self.bcewithlog_loss(obj_preds.view(-1, 1), obj_targets)
         ).sum() / num_fg
         loss_cls = (
-            self.bcewithlog_loss(
+            self.new_loss(
                 cls_preds.view(-1, self.num_classes)[fg_masks], cls_targets
             )
         ).sum() / num_fg

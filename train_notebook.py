@@ -12,7 +12,7 @@ from yolox.core import Trainer, launch
 from yolox.utils import configure_nccl, configure_omp, get_num_devices
 import os
 from yolox.exp import Exp as MyExp
-
+from yolox.models.losses import AsymmetricLossOptimized
 class Exp(MyExp):
     def __init__(self,output_dir):
         super(Exp, self).__init__()
@@ -26,12 +26,12 @@ class Exp(MyExp):
         self.input_size = (480, 480)
         self.test_size = (480, 480)
         self.basic_lr_per_img = 0.01 / 640.0
-        self.max_epoch = 75
+        self.max_epoch = 45
         self.warmup_epochs = 10
-        self.no_aug_epochs = 10
+        self.no_aug_epochs = 5
         self.num_classes = 10
-        #set seed
-        #self.seed=2022
+        # 最后保留得大一点，让no aug的时候能学到更多东西
+        self.min_lr_ratio = 0.05
     def get_model(self):
         from yolox.utils import freeze_module
         model = super().get_model()
@@ -53,7 +53,7 @@ def make_parser():
         type=str,
         help="url used to set up distributed training",
     )
-    parser.add_argument("-b", "--batch-size", type=int, default=64, help="batch size")
+    parser.add_argument("-b", "--batch-size", type=int, default=8, help="batch size")
     parser.add_argument(
         "-d", "--devices", type=int, default=1, help="device for training"
     )
@@ -91,7 +91,7 @@ def make_parser():
     parser.add_argument(
         "--cache",
         dest="cache",
-        default=True,
+        default=False,
         action="store_true",
         help="Caching imgs to RAM for fast training.",
     )
@@ -116,7 +116,7 @@ def make_parser():
         default=None,
         nargs=argparse.REMAINDER,
     )
-    parser.add_argument("--model",type=str,default="",help='the path model saved')
+    parser.add_argument("--model",type=str,default="YOLOX_out",help='the path model saved')
 
     return parser
 

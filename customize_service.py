@@ -7,7 +7,7 @@ import argparse
 from PIL import Image
 import numpy as np
 from loguru import logger
-
+import cv2
 import os
 import torch
 
@@ -88,6 +88,7 @@ class PTVisionService(PTServingBaseService):
         for k, v in data.items():
             for file_name, file_content in v.items():
                 image = Image.open(file_content).convert('RGB')
+                image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2BGR)
                 preprocessed_data[k] = [image, file_name]
         # print(preprocessed_data)
         return preprocessed_data
@@ -98,7 +99,7 @@ class PTVisionService(PTServingBaseService):
 
     def _inference(self, data):
         result = {}
-        image1 = np.array(data['images'][0])
+        image1 = data['images'][0]
         outputs, img_info = self.model.inferenceImg(image1)
         outputs = outputs[0]
 
