@@ -57,7 +57,7 @@ def make_parser():
     parser.add_argument(
         "--fp16",
         dest="fp16",
-        default=False,
+        default=True,
         action="store_true",
         help="Adopting mix precision evaluating.",
     )
@@ -112,18 +112,14 @@ class Exp(MyExp):
         #self.data_dir = "datasets/COCO/"
         self.output_dir = output_dir
         #yolox_l 不用很大的模型
-        self.depth = 0.67
-        self.width = 0.75
+        self.depth = 1
+        self.width = 1
         self.input_size = (480, 480)
         self.test_size = (480, 480)
-        self.basic_lr_per_img = 0.01 / 320.0
-        self.max_epoch = 75
-        self.warmup_epochs = 5
-        self.no_aug_epochs = 5
         self.num_classes = 10
-        self.test_conf = 0.2
+        self.test_conf = 0.001
         # nms threshold
-        self.nmsthre = 0.45
+        self.nmsthre = 0.65
     def get_model(self):
         from yolox.utils import freeze_module
         model = super().get_model()

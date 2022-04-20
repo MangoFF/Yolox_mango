@@ -28,10 +28,10 @@ class Exp(MyExp):
         self.basic_lr_per_img = 0.01 / 640.0
         self.max_epoch = 75
         self.warmup_epochs = 10
-        self.no_aug_epochs = 5
+        self.no_aug_epochs = 10
         self.num_classes = 10
         #set seed
-        self.seed=2022
+        #self.seed=2022
     def get_model(self):
         from yolox.utils import freeze_module
         model = super().get_model()
@@ -142,8 +142,6 @@ def main(exp, args):
 
 if __name__ == "__main__":
     args = make_parser().parse_args()
-    #exp = get_exp(args.exp_file, args.name)
-    print("save model is "+str(args.model))
     exp=Exp(output_dir=args.model)
     exp.merge(args.opts)
 

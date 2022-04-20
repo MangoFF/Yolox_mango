@@ -16,85 +16,20 @@ from yolox.exp import get_exp
 from yolox.utils import fuse_model, get_model_info, postprocess, vis
 from tools.demo import Predictor
 IMAGE_EXT = [".jpg", ".jpeg", ".webp", ".bmp", ".png"]
-def make_parser():
-    parser = argparse.ArgumentParser("YOLOX Demo!")
-    parser.add_argument(
-        "demo", default="image", help="demo type, eg. image, video and webcam"
-    )
-    parser.add_argument("-expn", "--experiment-name", type=str, default=None)
-    parser.add_argument("-n", "--name", type=str, default=None, help="model name")
-
-    parser.add_argument(
-        "--path", default="./assets/dog.jpg", help="path to images or video"
-    )
-    parser.add_argument("--camid", type=int, default=0, help="webcam demo camera id")
-    parser.add_argument(
-        "--save_result",
-        action="store_true",
-        help="whether to save the inference result of image/video",
-    )
-
-    # exp file
-    parser.add_argument(
-        "-f",
-        "--exp_file",
-        default=None,
-        type=str,
-        help="pls input your experiment description file",
-    )
-    parser.add_argument("-c", "--ckpt", default=None, type=str, help="ckpt for eval")
-    parser.add_argument(
-        "--device",
-        default="cpu",
-        type=str,
-        help="device to run our model, can either be cpu or gpu",
-    )
-    parser.add_argument("--conf", default=0.3, type=float, help="test conf")
-    parser.add_argument("--nms", default=0.3, type=float, help="test nms threshold")
-    parser.add_argument("--tsize", default=None, type=int, help="test img size")
-    parser.add_argument(
-        "--fp16",
-        dest="fp16",
-        default=False,
-        action="store_true",
-        help="Adopting mix precision evaluating.",
-    )
-    parser.add_argument(
-        "--legacy",
-        dest="legacy",
-        default=False,
-        action="store_true",
-        help="To be compatible with older versions",
-    )
-    parser.add_argument(
-        "--fuse",
-        dest="fuse",
-        default=False,
-        action="store_true",
-        help="Fuse conv and bn for testing.",
-    )
-    parser.add_argument(
-        "--trt",
-        dest="trt",
-        default=False,
-        action="store_true",
-        help="Using TensorRT model for testing.",
-    )
-    return parser
 class Exp(MyExp):
     def __init__(self):
         super(Exp, self).__init__()
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
         self.data_dir="datasets/COCO/"
         #self.data_dir = "datasets/COCO/"
-        self.depth = 0.67
-        self.width = 0.75
+        self.depth = 1
+        self.width = 1
         self.input_size = (480, 480)
         self.test_size = (480, 480)
         self.num_classes=10
-        self.test_conf = 0.2
+        self.test_conf = 0.001
         # nms threshold
-        self.nmsthre = 0.45
+        self.nmsthre = 0.65
     def get_model(self):
         from yolox.utils import freeze_module
         model = super().get_model()
@@ -104,7 +39,6 @@ def get_model(model_path, **kwargs):
 
     if torch.cuda.is_available():
         device = torch.device('cuda')
-
     else:
         device = torch.device('cpu')
     exp = Exp()
@@ -191,5 +125,5 @@ if __name__=="__main__":
     img= Image.open("assets/boat.jpg")
     data["images"]=[img]
     data["images"].append("mango")
-    p=PTVisionService(model_name="yolox",model_path="./latest_ckpt.pth")
+    p=PTVisionService(model_name="yolox",model_path="./best_ckpt.pth")
     print(p._inference(data))
