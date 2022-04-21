@@ -33,7 +33,7 @@ class Exp(MyExp):
         self.depth = 1
         self.width = 1
         size = 480
-        lrd = 17
+        lrd = 21
         self.max_epoch = 45
         self.warmup_epochs = 10
         self.no_aug_epochs = 5
@@ -42,10 +42,10 @@ class Exp(MyExp):
         self.input_size = (size, size)
         self.test_size = (size, size)
         self.basic_lr_per_img = 0.01 / (64.0 * lrd)
-
+        self.multiscale_range=2
         # 让最小学习率再小一点，可能能学到东西
 
-        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_mlrr0001_img-enhance".format(size, lrd, self.max_epoch,
+        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_mlrr0001_range_num2".format(size, lrd, self.max_epoch,
                                                                             self.warmup_epochs, self.no_aug_epochs)
     def get_model(self):
         from yolox.utils import freeze_module

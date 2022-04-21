@@ -189,10 +189,10 @@ class COCODataset(Dataset):
         file_name = self.annotations[index][3]
 
         img_file = os.path.join(self.data_dir, self.name, file_name)
-
-        img = cv2.imread(img_file,flags=cv2.IMREAD_COLOR)
-        assert img is not None
-        return img
+        image = Image.open(img_file).convert('RGB')
+        image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2BGR)
+        assert image is not None
+        return image
 
     def pull_item(self, index):
         id_ = self.ids[index]
