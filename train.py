@@ -33,7 +33,7 @@ class Exp(MyExp):
         self.depth = 1
         self.width = 1
         size = 480
-        lrd = 19
+        lrd = 20
         self.max_epoch = 45
         self.warmup_epochs = 10
         self.no_aug_epochs = 5
@@ -46,7 +46,7 @@ class Exp(MyExp):
 
         # 让最小学习率再小一点，可能能学到东西
         self.act = "relu"
-        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_mlrr0001_relu".format(size, lrd, self.max_epoch,
+        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_mlrr0001".format(size, lrd, self.max_epoch,
                                                                             self.warmup_epochs, self.no_aug_epochs)
 
     def get_model(self):
@@ -163,7 +163,6 @@ def main(exp, args):
 
 if __name__ == "__main__":
     args = make_parser().parse_args()
-    #exp = get_exp(args.exp_file, args.name)
     print("save model is "+str(args.model))
     exp=Exp(output_dir=args.model)
     exp.merge(args.opts)

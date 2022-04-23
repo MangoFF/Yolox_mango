@@ -23,15 +23,22 @@ class Exp(MyExp):
         # yolox_l 不用很大的模型
         self.depth = 1
         self.width = 1
-        self.input_size = (480, 480)
-        self.test_size = (480, 480)
-        self.basic_lr_per_img = 0.01 / 640.0
+        size = 480
+        lrd = 19
         self.max_epoch = 45
         self.warmup_epochs = 10
         self.no_aug_epochs = 5
         self.num_classes = 10
-        # 最后保留得大一点，让no aug的时候能学到更多东西
-        self.min_lr_ratio = 0.05
+        self.min_lr_ratio = 0.001
+
+        self.input_size = (size, size)
+        self.test_size = (size, size)
+        self.basic_lr_per_img = 0.01 / (64.0 * lrd)
+
+        # 让最小学习率再小一点，可能能学到东西
+        self.act = "relu"
+        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_mlrr0001_relu".format(size, lrd, self.max_epoch,
+                                                                                 self.warmup_epochs, self.no_aug_epochs)
     def get_model(self):
         from yolox.utils import freeze_module
         model = super().get_model()
