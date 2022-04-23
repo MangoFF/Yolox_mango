@@ -23,6 +23,7 @@ from yolox.core import Trainer, launch
 from yolox.utils import configure_nccl, configure_omp, get_num_devices
 import os
 from yolox.exp import Exp as MyExp
+import moxing as mox
 class Exp(MyExp):
     def __init__(self,output_dir):
         super(Exp, self).__init__()
@@ -32,21 +33,20 @@ class Exp(MyExp):
         # yolox_l 不用很大的模型
         self.depth = 1
         self.width = 1
-        size = 480
-        lrd = 20
-        self.max_epoch = 45
+        size = 544
+        lrd = 10
+        self.max_epoch = 50
         self.warmup_epochs = 10
-        self.no_aug_epochs = 5
+        self.no_aug_epochs = 10
         self.num_classes = 10
-        self.min_lr_ratio = 0.001
+        self.min_lr_ratio = 0.01
 
         self.input_size = (size, size)
         self.test_size = (size, size)
         self.basic_lr_per_img = 0.01 / (64.0 * lrd)
 
         # 让最小学习率再小一点，可能能学到东西
-        self.act = "relu"
-        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_mlrr0001".format(size, lrd, self.max_epoch,
+        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_mlrr001_moverelo".format(size, lrd, self.max_epoch,
                                                                             self.warmup_epochs, self.no_aug_epochs)
 
     def get_model(self):
@@ -57,6 +57,7 @@ class Exp(MyExp):
 
 def make_parser():
     resume=False
+    resum_name = "yolox_l_s544_lrd10_mp45w10n5_mlrr0001"
     parser = argparse.ArgumentParser("YOLOX train parser")
     parser.add_argument("-expn", "--experiment-name", type=str, default=None)
     parser.add_argument("-n", "--name", type=str, default=None, help="model name")
@@ -87,7 +88,10 @@ def make_parser():
         parser.add_argument("-c", "--ckpt", default="/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_l.ckpt", type=str, help="checkpoint file")
         parser.add_argument("--resume", default=False, action="store_true", help="resume training")
     else:
-        parser.add_argument("-c", "--ckpt", default="/home/ma-user/modelarts/user-job-dir/model/best_model_train1/latest_ckpt.pth",type=str, help="checkpoint file")
+        model_best_path='obs://chuanhaimangoking939/yolox/ckpt/'+resum_name+'/last_epoch_ckpt.pth'
+        mox.file.copy(model_best_path,
+                      '/home/ma-user/modelarts/user-job-dir/model/ckpt/last_epoch_ckpt.ckpt')
+        parser.add_argument("-c", "--ckpt", default="/home/ma-user/modelarts/user-job-dir/model/ckpt/last_epoch_ckpt.ckpt",type=str, help="checkpoint file")
         parser.add_argument("--resume", default=True, action="store_true", help="resume training")
     parser.add_argument(
         "-e",

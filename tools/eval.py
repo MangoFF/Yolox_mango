@@ -32,7 +32,7 @@ def make_parser():
         type=str,
         help="url used to set up distributed training",
     )
-    parser.add_argument("-b", "--batch-size", type=int, default=1, help="batch size")
+    parser.add_argument("-b", "--batch-size", type=int, default=8, help="batch size")
     parser.add_argument(
         "-d", "--devices", default=1, type=int, help="device for training"
     )
@@ -114,10 +114,10 @@ class Exp(MyExp):
         #yolox_l 不用很大的模型
         self.depth = 1
         self.width = 1
-        self.input_size = (480, 480)
-        self.test_size = (480, 480)
+        self.test_size = (544, 544)
         self.num_classes = 10
-        self.test_conf = 0.001
+        self.test_conf = 0.007
+        self.act = "relu"
         # nms threshold
         self.nmsthre = 0.65
     def get_model(self):

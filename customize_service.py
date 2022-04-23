@@ -21,13 +21,13 @@ class Exp(MyExp):
         super(Exp, self).__init__()
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
         self.data_dir="datasets/COCO/"
-        #self.data_dir = "datasets/COCO/"
+        # yolox_l 不用很大的模型
         self.depth = 1
         self.width = 1
-        self.input_size = (480, 480)
-        self.test_size = (480, 480)
-        self.num_classes=10
-        self.test_conf = 0.001
+        self.test_size = (544, 544)
+        self.num_classes = 10
+        self.test_conf = 0.007
+        self.act = "relu"
         # nms threshold
         self.nmsthre = 0.65
     def get_model(self):

@@ -187,7 +187,6 @@ class COCODataset(Dataset):
 
     def load_image(self, index):
         file_name = self.annotations[index][3]
-
         img_file = os.path.join(self.data_dir, self.name, file_name)
         image = Image.open(img_file).convert('RGB')
         image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2BGR)

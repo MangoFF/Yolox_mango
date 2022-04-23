@@ -23,8 +23,8 @@ class Exp(MyExp):
         # yolox_l 不用很大的模型
         self.depth = 1
         self.width = 1
-        size = 480
-        lrd = 19
+        size = 544
+        lrd = 20
         self.max_epoch = 45
         self.warmup_epochs = 10
         self.no_aug_epochs = 5
