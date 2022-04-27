@@ -221,3 +221,4 @@ events.out.tfevents*
 # vim
 .vim
 ckpt
+*.whl

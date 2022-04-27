@@ -2,7 +2,6 @@
 # -*- coding:utf-8 -*-
 # Copyright (c) Megvii, Inc. and its affiliates.
 import os
-import moxing as mox
 os.system("pip install loguru")
 os.system("pip install thop")
 os.system("pip install pycocotools")
@@ -13,11 +12,7 @@ os.system("pip install ninja")
 os.system("pip install tabulate")
 os.system("pip install scikit-image")
 os.system("pip install Pillow")
-os.system("pip uninstall mmcv -y")
-os.system("pip uninstall mmcv-full -y")
-mox.file.copy('obs://chuanhaimangoking939/mmdetection/mmcv_full-1.4.8-cp37-cp37m-manylinux1_x86_64 .whl','/cache/mmcv_full-1.4.8-cp37-cp37m-manylinux1_x86_64.whl')
-os.system('pip install /cache/mmcv_full-1.4.8-cp37-cp37m-manylinux1_x86_64.whl')
-os.system("pip install mmcls")
+
 import argparse
 import random
 import warnings
@@ -28,7 +23,6 @@ from yolox.core import Trainer, launch
 from yolox.utils import configure_nccl, configure_omp, get_num_devices
 import os
 from yolox.exp import Exp as MyExp
-from yolox.models import EfficientNet
 import moxing as mox
 class Exp(MyExp):
     def __init__(self,output_dir):
@@ -40,8 +34,8 @@ class Exp(MyExp):
         self.depth = 1
         self.width = 1
         size = 544
-        lrd = 1
-        self.max_epoch = 60
+        lrd = 50
+        self.max_epoch = 50
         self.warmup_epochs = 10
         self.no_aug_epochs = 10
         self.num_classes = 10
@@ -50,19 +44,20 @@ class Exp(MyExp):
         self.input_size = (size, size)
         self.test_size = (size, size)
         self.basic_lr_per_img = 0.01 / (64.0 * lrd)
+
         # 让最小学习率再小一点，可能能学到东西
-        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_FocalLoss_SiLu_Sizeloss".format(size, lrd, self.max_epoch,
-                                                                                           self.warmup_epochs,
-                                                                                           self.no_aug_epochs)
+        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_mlrr001_micro_fineturn".format(size, lrd, self.max_epoch,
+                                                                            self.warmup_epochs, self.no_aug_epochs)
 
     def get_model(self):
         from yolox.utils import freeze_module
         model = super().get_model()
+        # freeze_module(model.backbone.backbone)
         return model
 
 def make_parser():
     resume=False
-    resum_name = "yolox_l_s544_lrd10_mp50w10n10_FocalLoss_relu6"
+    resum_name = "yolox_l_s544_lrd10_mp45w10n5_mlrr0001"
     parser = argparse.ArgumentParser("YOLOX train parser")
     parser.add_argument("-expn", "--experiment-name", type=str, default=None)
     parser.add_argument("-n", "--name", type=str, default=None, help="model name")
@@ -90,10 +85,10 @@ def make_parser():
     )
 
     if not resume:
-        parser.add_argument("-c", "--ckpt", default="/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_l.ckpt", type=str, help="checkpoint file")
+        parser.add_argument("-c", "--ckpt", default="/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_l_finetune.pth", type=str, help="checkpoint file")
         parser.add_argument("--resume", default=False, action="store_true", help="resume training")
     else:
-        model_best_path='obs://chuanhaimangoking939/yolox/ckpt3/'+resum_name+'/last_epoch_ckpt.pth'
+        model_best_path='obs://chuanhaimangoking939/yolox/ckpt/'+resum_name+'/last_epoch_ckpt.pth'
         mox.file.copy(model_best_path,
                       '/home/ma-user/modelarts/user-job-dir/model/ckpt/last_epoch_ckpt.ckpt')
         parser.add_argument("-c", "--ckpt", default="/home/ma-user/modelarts/user-job-dir/model/ckpt/last_epoch_ckpt.ckpt",type=str, help="checkpoint file")

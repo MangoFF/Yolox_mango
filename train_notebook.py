@@ -12,8 +12,11 @@ from yolox.core import Trainer, launch
 from yolox.utils import configure_nccl, configure_omp, get_num_devices
 import os
 from yolox.exp import Exp as MyExp
-from yolox.models.losses import AsymmetricLossOptimized
+from yolox.models import EfficientNet
 class Exp(MyExp):
+    """
+    set the model detail here,inclue the data,dataaug etc.
+    """
     def __init__(self,output_dir):
         super(Exp, self).__init__()
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
@@ -24,31 +27,29 @@ class Exp(MyExp):
         self.depth = 1
         self.width = 1
         size = 544
-        lrd = 20
-        self.max_epoch = 45
+        lrd = 10
+        self.max_epoch = 50
         self.warmup_epochs = 10
-        self.no_aug_epochs = 5
+        self.no_aug_epochs = 10
         self.num_classes = 10
-        self.min_lr_ratio = 0.001
+        self.min_lr_ratio = 0.01
 
         self.input_size = (size, size)
         self.test_size = (size, size)
         self.basic_lr_per_img = 0.01 / (64.0 * lrd)
-
         # 让最小学习率再小一点，可能能学到东西
-        self.act = "relu"
-        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_mlrr0001_relu".format(size, lrd, self.max_epoch,
-                                                                                 self.warmup_epochs, self.no_aug_epochs)
+        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_freeze_backbone_FCCY".format(size, lrd, self.max_epoch,
+                                                                                        self.warmup_epochs,
+                                                                                        self.no_aug_epochs)
+
     def get_model(self):
         from yolox.utils import freeze_module
+        #直接换backbone可能步幅太大了，我觉得可以慢慢来
         model = super().get_model()
-        #freeze_module(model.backbone.backbone)
         return model
 
 def make_parser():
     parser = argparse.ArgumentParser("YOLOX train parser")
-    parser.add_argument("-expn", "--experiment-name", type=str, default=None)
-    parser.add_argument("-n", "--name", type=str, default=None, help="model name")
 
     # distributed
     parser.add_argument(
@@ -60,16 +61,11 @@ def make_parser():
         type=str,
         help="url used to set up distributed training",
     )
-    parser.add_argument("-b", "--batch-size", type=int, default=8, help="batch size")
+
+    parser.add_argument("-b", "--batch-size", type=int, default=4, help="batch size")
+
     parser.add_argument(
         "-d", "--devices", type=int, default=1, help="device for training"
-    )
-    parser.add_argument(
-        "-f",
-        "--exp_file",
-        default="exps/example/yolo_mango.py ",
-        type=str,
-        help="plz input your experiment description file",
     )
     parser.add_argument(
         "--resume", default=False, action="store_true", help="resume training"
@@ -123,12 +119,14 @@ def make_parser():
         default=None,
         nargs=argparse.REMAINDER,
     )
+    # this arg should be set in the huawei notebook
     parser.add_argument("--model",type=str,default="YOLOX_out",help='the path model saved')
 
     return parser
 
 @logger.catch
 def main(exp, args):
+    # do not set the seed to speed up
     if exp.seed is not None:
         random.seed(exp.seed)
         torch.manual_seed(exp.seed)
@@ -143,17 +141,18 @@ def main(exp, args):
     configure_omp()
     cudnn.benchmark = True
 
+    # something set in the args some in the exp ,so we pass all of two
     trainer = Trainer(exp, args)
     trainer.train()
 
 
 if __name__ == "__main__":
     args = make_parser().parse_args()
-    exp=Exp(output_dir=args.model)
+    # the model will be set in the huawei train notebook
+    exp = Exp(output_dir=args.model)
+    # this line merge the input into the exp,by overwrite
     exp.merge(args.opts)
-
-    if not args.experiment_name:
-        args.experiment_name = exp.exp_name
+    args.experiment_name="taril"
 
     num_gpu = get_num_devices() if args.devices is None else args.devices
     assert num_gpu <= get_num_devices()

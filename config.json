@@ -160,6 +160,18 @@
                 "restraint": "EXACT",
                 "package_version": "0.8.9",
                 "package_name": "tabulate"
+            },{
+                "restraint": "EXACT",
+                "package_version": "0.22.0",
+                "package_name": "mmcls"
+            },{
+                "restraint": "EXACT",
+                "package_version": "0.22.0",
+                "package_name": "mmcls"
+            },{
+                "restraint": "EXACT",
+                "package_version": "1.5.0",
+                "package_name": "mmcv"
             }
         ]
     }]

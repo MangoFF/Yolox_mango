@@ -20,28 +20,11 @@ from yolox.exp import Exp as MyExp
 def make_parser():
     parser = argparse.ArgumentParser("YOLOX Eval")
     parser.add_argument("-expn", "--experiment-name", type=str, default=None)
+
     parser.add_argument("-n", "--name", type=str, default=None, help="model name")
 
-    # distributed
-    parser.add_argument(
-        "--dist-backend", default="nccl", type=str, help="distributed backend"
-    )
-    parser.add_argument(
-        "--dist-url",
-        default=None,
-        type=str,
-        help="url used to set up distributed training",
-    )
     parser.add_argument("-b", "--batch-size", type=int, default=8, help="batch size")
-    parser.add_argument(
-        "-d", "--devices", default=1, type=int, help="device for training"
-    )
-    parser.add_argument(
-        "--num_machines", default=1, type=int, help="num of node for training"
-    )
-    parser.add_argument(
-        "--machine_rank", default=0, type=int, help="node rank for multi-node training"
-    )
+
     parser.add_argument(
         "-f",
         "--exp_file",
@@ -49,11 +32,17 @@ def make_parser():
         type=str,
         help="pls input your expriment description file",
     )
-    parser.add_argument("-c", "--ckpt", default="best_ckpt.pth", type=str, help="ckpt for eval")
+
     parser.add_argument("--conf", type=float, help="test conf")
+
     parser.add_argument("--nms", type=float, help="test nms threshold")
+
     parser.add_argument("--tsize", type=int, help="test img size")
+
     parser.add_argument("--seed", default=None, type=int, help="eval seed")
+
+    parser.add_argument("-c", "--ckpt", default="best_ckpt.pth", type=str, help="ckpt for eval")
+
     parser.add_argument(
         "--fp16",
         dest="fp16",
@@ -61,6 +50,19 @@ def make_parser():
         action="store_true",
         help="Adopting mix precision evaluating.",
     )
+
+    parser.add_argument(
+        "-d", "--devices", default=1, type=int, help="device for training"
+    )
+
+    parser.add_argument(
+        "--num_machines", default=1, type=int, help="num of node for training"
+    )
+
+    parser.add_argument(
+        "--machine_rank", default=0, type=int, help="node rank for multi-node training"
+    )
+
     parser.add_argument(
         "--fuse",
         dest="fuse",
@@ -89,6 +91,16 @@ def make_parser():
         action="store_true",
         help="Evaluating on test-dev set.",
     )
+    # distributed
+    parser.add_argument(
+        "--dist-backend", default="nccl", type=str, help="distributed backend"
+    )
+    parser.add_argument(
+        "--dist-url",
+        default=None,
+        type=str,
+        help="url used to set up distributed training",
+    )
     parser.add_argument(
         "--speed",
         dest="speed",
@@ -108,18 +120,29 @@ class Exp(MyExp):
     def __init__(self,output_dir):
         super(Exp, self).__init__()
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
+        #数据地址
         self.data_dir="datasets/COCO/"
-        #self.data_dir = "datasets/COCO/"
+        #输出的文件地址
         self.output_dir = output_dir
-        #yolox_l 不用很大的模型
+        self.act = "lrelu"
+        # yolox_l 不用很大的模型
         self.depth = 1
         self.width = 1
-        self.test_size = (544, 544)
+        size = 544
+        lrd = 10
+        self.max_epoch = 50
+        self.warmup_epochs = 10
+        self.no_aug_epochs = 10
         self.num_classes = 10
-        self.test_conf = 0.007
-        self.act = "relu"
-        # nms threshold
-        self.nmsthre = 0.65
+        self.min_lr_ratio = 0.01
+
+        self.input_size = (size, size)
+        self.test_size = (size, size)
+        self.basic_lr_per_img = 0.01 / (64.0 * lrd)
+        # 让最小学习率再小一点，可能能学到东西
+        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_FocalLoss_lrelu".format(size, lrd, self.max_epoch,
+                                                                                   self.warmup_epochs,
+                                                                                   self.no_aug_epochs)
     def get_model(self):
         from yolox.utils import freeze_module
         model = super().get_model()

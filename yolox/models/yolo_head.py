@@ -11,7 +11,7 @@ import torch.nn.functional as F
 
 from yolox.utils import bboxes_iou, meshgrid
 
-from .losses import IOUloss
+from .losses import IOUloss,FocalLoss
 from .network_blocks import BaseConv, DWConv
 
 class YOLOXHead(nn.Module):
@@ -124,8 +124,8 @@ class YOLOXHead(nn.Module):
         self.use_l1 = False
         self.l1_loss = nn.L1Loss(reduction="none")
         #要换的话取配置文件里面换
-        self.new_loss = nn.BCEWithLogitsLoss(reduction="none")
-        self.bcewithlog_loss = nn.BCEWithLogitsLoss(reduction="none")
+        #self.bcewithlog_loss = nn.BCEWithLogitsLoss(reduction="none")
+        self.bcewithlog_loss = FocalLoss(reduction="none")
         self.iou_loss = IOUloss(reduction="none")
         self.strides = strides
         self.grids = [torch.zeros(1)] * len(in_channels)
@@ -392,11 +392,15 @@ class YOLOXHead(nn.Module):
         loss_iou = (
             self.iou_loss(bbox_preds.view(-1, 4)[fg_masks], reg_targets)
         ).sum() / num_fg
+        """
+        因为focal loss 相比以前更小了，而比例以前是定好的，这里改动一下
+        训了一圈好像也没什么改变，算了不改了
+        """
         loss_obj = (
             self.bcewithlog_loss(obj_preds.view(-1, 1), obj_targets)
         ).sum() / num_fg
         loss_cls = (
-            self.new_loss(
+            self.bcewithlog_loss(
                 cls_preds.view(-1, self.num_classes)[fg_masks], cls_targets
             )
         ).sum() / num_fg
@@ -406,7 +410,7 @@ class YOLOXHead(nn.Module):
             ).sum() / num_fg
         else:
             loss_l1 = 0.0
-
+        # 因为我们采用 focalloss 来优化问题，focal loss相比以往总是比较小，所以这里我们调大值
         reg_weight = 5.0
         loss = reg_weight * loss_iou + loss_obj + loss_cls + loss_l1
 
@@ -454,7 +458,7 @@ class YOLOXHead(nn.Module):
             expanded_strides = expanded_strides.cpu().float()
             x_shifts = x_shifts.cpu()
             y_shifts = y_shifts.cpu()
-
+        # 在这里判断出那些框在检测框里面，那些框是检测框的中心(用于预测类被）
         fg_mask, is_in_boxes_and_center = self.get_in_boxes_info(
             gt_bboxes_per_image,
             expanded_strides,
@@ -463,11 +467,13 @@ class YOLOXHead(nn.Module):
             total_num_anchors,
             num_gt,
         )
-
+        # 在检测框里面的都有机会得到标签
         bboxes_preds_per_image = bboxes_preds_per_image[fg_mask]
         cls_preds_ = cls_preds[batch_idx][fg_mask]
         obj_preds_ = obj_preds[batch_idx][fg_mask]
         num_in_boxes_anchor = bboxes_preds_per_image.shape[0]
+
+
 
         if mode == "cpu":
             gt_bboxes_per_image = gt_bboxes_per_image.cpu()
@@ -494,11 +500,25 @@ class YOLOXHead(nn.Module):
             pair_wise_cls_loss = F.binary_cross_entropy(
                 cls_preds_.sqrt_(), gt_cls_per_image, reduction="none"
             ).sum(-1)
-        del cls_preds_
 
+            # size_loss
+            """
+            在这里加入了一个新的loss，这里求得在80*80，40*40，20*20当的面积除以平方单个像素对应实际面积的平方
+            注意，更改size的时候需要注意这个尺寸
+            ！不知道为什么，没用什么用，暂时咱们先去看看别的文章，自己瞎探索还是很难涨点
+            """
+            # small, median, big = fg_mask[:4624].sum(0), fg_mask[4624:4624 + 1156].sum(0), fg_mask[4624 + 1156:].sum(0)
+            # bbox_relasize = bboxes_preds_per_image[:, 2].float() * bboxes_preds_per_image[:, 3].float()
+            # bbox_relasize = torch.cat((bbox_relasize[0:small] / 8 ** 2, bbox_relasize[small:small + median] / 16 ** 2,
+            #                            bbox_relasize[small + median:] / 32 ** 2))
+            # bbox_relasize=torch.abs(bbox_relasize-torch.mean(bbox_relasize))
+            # bbox_relasize = bbox_relasize.float().unsqueeze(0).repeat(num_gt, 1)
+        del cls_preds_
+        # 根据loss，和后面的dynamic_k得到 loss 前k小的框得到标签
         cost = (
             pair_wise_cls_loss
             + 3.0 * pair_wise_ious_loss
+            #+ bbox_relasize/2
             + 100000.0 * (~is_in_boxes_and_center)
         )
 
@@ -508,7 +528,8 @@ class YOLOXHead(nn.Module):
             pred_ious_this_matching,
             matched_gt_inds,
         ) = self.dynamic_k_matching(cost, pair_wise_ious, gt_classes, num_gt, fg_mask)
-        del pair_wise_cls_loss, cost, pair_wise_ious, pair_wise_ious_loss
+        del pair_wise_cls_loss, cost, pair_wise_ious, pair_wise_ious_loss#,bbox_relasize
+
 
         if mode == "cpu":
             gt_matched_classes = gt_matched_classes.cuda()

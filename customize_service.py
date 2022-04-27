@@ -10,10 +10,7 @@ from loguru import logger
 import cv2
 import os
 import torch
-
 from yolox.data.datasets import COCO_CLASSES
-from yolox.exp import get_exp
-from yolox.utils import fuse_model, get_model_info, postprocess, vis
 from tools.demo import Predictor
 IMAGE_EXT = [".jpg", ".jpeg", ".webp", ".bmp", ".png"]
 class Exp(MyExp):
@@ -21,15 +18,25 @@ class Exp(MyExp):
         super(Exp, self).__init__()
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
         self.data_dir="datasets/COCO/"
+        self.act = "lrelu"
         # yolox_l 不用很大的模型
         self.depth = 1
         self.width = 1
-        self.test_size = (544, 544)
+        size = 544
+        lrd = 10
+        self.max_epoch = 50
+        self.warmup_epochs = 10
+        self.no_aug_epochs = 10
         self.num_classes = 10
-        self.test_conf = 0.007
-        self.act = "relu"
-        # nms threshold
-        self.nmsthre = 0.65
+        self.min_lr_ratio = 0.01
+
+        self.input_size = (size, size)
+        self.test_size = (size, size)
+        self.basic_lr_per_img = 0.01 / (64.0 * lrd)
+        # 让最小学习率再小一点，可能能学到东西
+        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_FocalLoss_lrelu".format(size, lrd, self.max_epoch,
+                                                                                   self.warmup_epochs,
+                                                                                   self.no_aug_epochs)
     def get_model(self):
         from yolox.utils import freeze_module
         model = super().get_model()
@@ -124,6 +131,7 @@ class PTVisionService(PTServingBaseService):
 if __name__=="__main__":
     data={}
     img= Image.open("assets/boat.jpg")
+    img = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
     data["images"]=[img]
     data["images"].append("mango")
     p=PTVisionService(model_name="yolox",model_path="./best_ckpt.pth")

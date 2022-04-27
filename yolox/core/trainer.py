@@ -69,7 +69,13 @@ class Trainer:
             mode="a",
         )
 
+
     def train(self):
+        """
+        cale about the train schedule
+        Returns:
+
+        """
         self.before_train()
         try:
             self.train_in_epoch()
@@ -217,6 +223,7 @@ class Trainer:
         self.save_ckpt(ckpt_name="latest")
 
         if (self.epoch + 1) % self.exp.eval_interval == 0:
+            #what it is doing?
             all_reduce_norm(self.model)
             self.evaluate_and_save_model()
 

@@ -140,6 +140,7 @@ def _mirror(image, boxes, prob=0.5):
 
 
 def preproc(img, input_size, swap=(2, 0, 1)):
+    # padding the mat using 114
     if len(img.shape) == 3:
         padded_img = np.ones((input_size[0], input_size[1], 3), dtype=np.uint8) * 114
     else:
@@ -152,8 +153,9 @@ def preproc(img, input_size, swap=(2, 0, 1)):
         interpolation=cv2.INTER_LINEAR,
     ).astype(np.uint8)
     padded_img[: int(img.shape[0] * r), : int(img.shape[1] * r)] = resized_img
-
+    # transform the w,h,c to c w,h ,meeting the need of pytorch
     padded_img = padded_img.transpose(swap)
+    # convert to float32
     padded_img = np.ascontiguousarray(padded_img, dtype=np.float32)
     return padded_img, r
 
@@ -167,33 +169,50 @@ class TrainTransform:
     def __call__(self, image, targets, input_dim):
         boxes = targets[:, :4].copy()
         labels = targets[:, 4].copy()
+        """
+        如果没有bbox，可能是test集合用来预测的，所以直接返回
+        """
         if len(boxes) == 0:
+            """
+            np.zero里面输入的是tuple
+            """
             targets = np.zeros((self.max_labels, 5), dtype=np.float32)
             image, r_o = preproc(image, input_dim)
             return image, targets
-
+        """
+        这里是浅复制，似乎内部的值依然不变？
+        """
         image_o = image.copy()
         targets_o = targets.copy()
         height_o, width_o, _ = image_o.shape
+        """
+        get the bbox and the label of the img
+        """
         boxes_o = targets_o[:, :4]
         labels_o = targets_o[:, 4]
         # bbox_o: [xyxy] to [c_x,c_y,w,h]
+        # get from coco is xyxy,but we need is cx,cy,w,h yolo format
         boxes_o = xyxy2cxcywh(boxes_o)
-
+        # hsv augment
         if random.random() < self.hsv_prob:
             augment_hsv(image)
+        # mirror flip
         image_t, boxes = _mirror(image, boxes, self.flip_prob)
+        # h w c
         height, width, _ = image_t.shape
+        # padding here， r is the ratio of mat resize
         image_t, r_ = preproc(image_t, input_dim)
         # boxes [xyxy] 2 [cx,cy,w,h]
         boxes = xyxy2cxcywh(boxes)
         boxes *= r_
 
+        # 在这里过滤了标记
         mask_b = np.minimum(boxes[:, 2], boxes[:, 3]) > 1
         boxes_t = boxes[mask_b]
         labels_t = labels[mask_b]
 
         if len(boxes_t) == 0:
+            # 如果过滤得没了。还是放弃变换？只做pad
             image_t, r_o = preproc(image_o, input_dim)
             boxes_o *= r_o
             boxes_t = boxes_o
