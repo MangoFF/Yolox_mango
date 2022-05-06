@@ -11,7 +11,8 @@ thop
 ninja
 tabulate
 tensorboard
-
+mmcls
+mmcv
 # verified versions
 # pycocotools corresponds to https://github.com/ppwwyyxx/cocoapi
 pycocotools>=2.0.2

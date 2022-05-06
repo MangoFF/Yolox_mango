@@ -18,7 +18,6 @@ class Exp(MyExp):
         super(Exp, self).__init__()
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
         self.data_dir="datasets/COCO/"
-        self.act = "lrelu"
         # yolox_l 不用很大的模型
         self.depth = 1
         self.width = 1

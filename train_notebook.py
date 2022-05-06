@@ -44,8 +44,10 @@ class Exp(MyExp):
 
     def get_model(self):
         from yolox.utils import freeze_module
+        from yolox.models.yolov4s.yolo import Yolov4s
         #直接换backbone可能步幅太大了，我觉得可以慢慢来
-        model = super().get_model()
+        #backbone=Yolov4s("yolox/models/yolov4s/yolov4-p5.yaml")
+        model = super().get_model()#backbone=backbone)
         return model
 
 def make_parser():
@@ -62,7 +64,7 @@ def make_parser():
         help="url used to set up distributed training",
     )
 
-    parser.add_argument("-b", "--batch-size", type=int, default=4, help="batch size")
+    parser.add_argument("-b", "--batch-size", type=int, default=1, help="batch size")
 
     parser.add_argument(
         "-d", "--devices", type=int, default=1, help="device for training"
@@ -71,6 +73,7 @@ def make_parser():
         "--resume", default=False, action="store_true", help="resume training"
     )
     parser.add_argument("-c", "--ckpt", default="ckpt/yolox_l.pth", type=str, help="checkpoint file")
+    parser.add_argument("-bkc", "--backbone_ckpt", default="ckpt/yolov4-p5.pt", type=str, help="checkpoint file")
     parser.add_argument(
         "-e",
         "--start_epoch",
@@ -102,7 +105,7 @@ def make_parser():
         "-o",
         "--occupy",
         dest="occupy",
-        default=True,
+        default=False,
         action="store_true",
         help="occupy GPU memory first for training.",
     )

@@ -141,13 +141,14 @@ class Trainer:
         logger.info(
             "Model Summary: {}".format(get_model_info(model, self.exp.test_size))
         )
+
+        # value of epoch will be set in `resume_train`
+        model = self.resume_train(model)
         model.to(self.device)
 
         # solver related init
         self.optimizer = self.exp.get_optimizer(self.args.batch_size)
 
-        # value of epoch will be set in `resume_train`
-        model = self.resume_train(model)
 
         # data related init
         self.no_aug = self.start_epoch >= self.max_epoch - self.exp.no_aug_epochs
@@ -315,6 +316,20 @@ class Trainer:
                 ckpt_file = self.args.ckpt
                 ckpt = torch.load(ckpt_file, map_location=self.device)["model"]
                 model = load_ckpt(model, ckpt)
+            # if self.args.backbone_ckpt is not None:
+            #     bk_ckpt_file = self.args.backbone_ckpt
+            #     bk_ckpt = torch.load(bk_ckpt_file, map_location=self.device)
+            #     from models.yolo import Model
+            #     from yolox.models.yolov4s.torch_utils import intersect_dicts
+            #     import copy
+            #     model_backbone = Model("models/yolov4-p5.yaml", ch=3, nc=10)
+            #     state_dict = bk_ckpt['model'].state_dict()  # to FP32
+            #     state_dict = intersect_dicts(state_dict, model_backbone.state_dict())  # intersect
+            #     model_backbone.load_state_dict(state_dict, strict=False)  # load
+            #     model_backbone.save=[5,7,9]
+            #     del model.backbone.model
+            #     model.backbone.model=copy.deepcopy(model_backbone.model)
+            #     del model_backbone,state_dict,bk_ckpt
             self.start_epoch = 0
 
         return model

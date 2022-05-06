@@ -23,7 +23,7 @@ def make_parser():
 
     parser.add_argument("-n", "--name", type=str, default=None, help="model name")
 
-    parser.add_argument("-b", "--batch-size", type=int, default=8, help="batch size")
+    parser.add_argument("-b", "--batch-size", type=int, default=1, help="batch size")
 
     parser.add_argument(
         "-f",
@@ -124,7 +124,6 @@ class Exp(MyExp):
         self.data_dir="datasets/COCO/"
         #输出的文件地址
         self.output_dir = output_dir
-        self.act = "lrelu"
         # yolox_l 不用很大的模型
         self.depth = 1
         self.width = 1
@@ -134,8 +133,6 @@ class Exp(MyExp):
         self.warmup_epochs = 10
         self.no_aug_epochs = 10
         self.num_classes = 10
-        self.min_lr_ratio = 0.01
-
         self.input_size = (size, size)
         self.test_size = (size, size)
         self.basic_lr_per_img = 0.01 / (64.0 * lrd)

@@ -46,12 +46,12 @@ class Exp(MyExp):
         self.no_aug_epochs = 10
         self.num_classes = 10
         self.min_lr_ratio = 0.01
-
+        #self.act="relu"
         self.input_size = (size, size)
         self.test_size = (size, size)
         self.basic_lr_per_img = 0.01 / (64.0 * lrd)
         # 让最小学习率再小一点，可能能学到东西
-        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_FocalLoss_silu_loss*5".format(size, lrd, self.max_epoch,
+        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_new_dataset_silu".format(size, lrd, self.max_epoch,
                                                                             self.warmup_epochs, self.no_aug_epochs)
 
     def get_model(self):
@@ -60,8 +60,8 @@ class Exp(MyExp):
         return model
 
 def make_parser():
-    resume=True
-    resum_name = "yolox_l_s544_lrd10_mp60w10n10_FocalLoss_silu_loss*5"
+    resume = True
+    resum_name = "yolox_l_s544_lrd10_mp60w10n10_new_dataset_silu"
     parser = argparse.ArgumentParser("YOLOX train parser")
     parser.add_argument("-expn", "--experiment-name", type=str, default=None)
     parser.add_argument("-n", "--name", type=str, default=None, help="model name")
@@ -167,7 +167,7 @@ def main(exp, args):
 
     trainer = Trainer(exp, args)
     trainer.train()
-
+    torch.nn.ReLU
 
 if __name__ == "__main__":
     args = make_parser().parse_args()
