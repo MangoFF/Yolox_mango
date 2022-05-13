@@ -28,20 +28,19 @@ class Exp(MyExp):
         self.width = 1
         size = 544
         lrd = 10
-        self.max_epoch = 64
+        self.max_epoch = 75
         self.warmup_epochs = 10
-        self.no_aug_epochs = 10
+        self.no_aug_epochs = 15
         self.num_classes = 10
         self.min_lr_ratio = 0.01
 
+        self.warmup_lr = 1e-7
         self.input_size = (size, size)
         self.test_size = (size, size)
         self.basic_lr_per_img = 0.01 / (64.0 * lrd)
-        self.eval_interval = 20
-
+        self.eval_interval = 10
+        self.exp_name = "Poly_loss_exp"
     def get_model(self):
-        from yolox.utils import freeze_module
-        from yolox.models.yolov4s.yolo import Yolov4s
         model = super().get_model()#backbone=backbone)
         return model
 

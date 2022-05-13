@@ -36,37 +36,33 @@ class Exp(MyExp):
         # self.data_dir="datasets/COCO/"
         self.data_dir = "/home/ma-user/modelarts/user-job-dir/model/datasets/COCO/"
         self.output_dir = output_dir
-        # yolox_l 不用很大的模型
-        self.depth = 1
-        self.width = 1
+        # 大模型，640，做一个大epoch的实验
+        self.depth = 1.33
+        self.width = 1.25
         size = 544
-        lrd = 1
-        self.max_epoch = 60
+        lrd = 10
+        self.warmup_lr = 1e-7
+        self.max_epoch = 200
         self.warmup_epochs = 10
         self.no_aug_epochs = 10
         self.num_classes = 10
         self.min_lr_ratio = 0.01
-
+        #self.act="relu"
         self.input_size = (size, size)
         self.test_size = (size, size)
         self.basic_lr_per_img = 0.01 / (64.0 * lrd)
-        # prob of applying hsv aug
         # 让最小学习率再小一点，可能能学到东西
-        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_yolov4s".format(size, lrd, self.max_epoch,
-                                                                                           self.warmup_epochs,
-                                                                                           self.no_aug_epochs)
+        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_544-200epoch".format(size, lrd, self.max_epoch,
+                                                                            self.warmup_epochs, self.no_aug_epochs)
 
     def get_model(self):
         from yolox.utils import freeze_module
-        from yolox.models.yolov4s.yolo import Yolov4s
-        # 直接换backbone可能步幅太大了，我觉得可以慢慢来
-        backbone = Yolov4s("/home/ma-user/modelarts/user-job-dir/model/yolox/models/yolov4s/yolov4-p5.yaml")
-        model = super().get_model(backbone=backbone)
+        model = super().get_model()
         return model
 
 def make_parser():
-    resume=False
-    resum_name = "yolox_l_s544_lrd10_mp60w10n10_Nofocal_Org_exp48"
+    resume = True
+    resum_name = "yolox_l_s544_lrd10_mp200w10n10_544-200epoch"
     parser = argparse.ArgumentParser("YOLOX train parser")
     parser.add_argument("-expn", "--experiment-name", type=str, default=None)
     parser.add_argument("-n", "--name", type=str, default=None, help="model name")
@@ -81,7 +77,7 @@ def make_parser():
         type=str,
         help="url used to set up distributed training",
     )
-    parser.add_argument("-b", "--batch-size", type=int, default=8, help="batch size")
+    parser.add_argument("-b", "--batch-size", type=int, default=16, help="batch size")
     parser.add_argument(
         "-d", "--devices", type=int, default=1, help="device for training"
     )
@@ -172,7 +168,7 @@ def main(exp, args):
 
     trainer = Trainer(exp, args)
     trainer.train()
-
+    torch.nn.ReLU
 
 if __name__ == "__main__":
     args = make_parser().parse_args()

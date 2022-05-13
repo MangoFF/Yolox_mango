@@ -121,6 +121,7 @@ class Exp(BaseExp):
                 backbone = YOLOPAFPN(self.depth, self.width, in_channels=in_channels, act=self.act)
             if head is None:
                 head = YOLOXHead(self.num_classes, self.width, in_channels=in_channels, act=self.act)
+                #head = dyhead(self.num_classes, self.width, in_channels=in_channels, act=self.act)
             self.model = YOLOX(backbone, head)
 
         self.model.apply(init_yolo)

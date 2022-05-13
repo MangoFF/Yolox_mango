@@ -11,7 +11,7 @@ import torch.nn.functional as F
 
 from yolox.utils import bboxes_iou, meshgrid
 
-from .losses import IOUloss
+from .losses import IOUloss,PolyLoss
 from .network_blocks import BaseConv, DWConv
 
 
@@ -125,6 +125,7 @@ class YOLOXHead(nn.Module):
         self.use_l1 = False
         self.l1_loss = nn.L1Loss(reduction="none")
         self.bcewithlog_loss = nn.BCEWithLogitsLoss(reduction="none")
+        self.PolyLoss=PolyLoss(reduction="none")
         self.iou_loss = IOUloss(reduction="none")
         self.strides = strides
         self.grids = [torch.zeros(1)] * len(in_channels)
@@ -395,7 +396,7 @@ class YOLOXHead(nn.Module):
             self.bcewithlog_loss(obj_preds.view(-1, 1), obj_targets)
         ).sum() / num_fg
         loss_cls = (
-            self.bcewithlog_loss(
+            self.PolyLoss(
                 cls_preds.view(-1, self.num_classes)[fg_masks], cls_targets
             )
         ).sum() / num_fg

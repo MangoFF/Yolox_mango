@@ -23,7 +23,7 @@ def make_parser():
 
     parser.add_argument("-n", "--name", type=str, default=None, help="model name")
 
-    parser.add_argument("-b", "--batch-size", type=int, default=1, help="batch size")
+    parser.add_argument("-b", "--batch-size", type=int, default=4, help="batch size")
 
     parser.add_argument(
         "-f",
@@ -41,7 +41,7 @@ def make_parser():
 
     parser.add_argument("--seed", default=None, type=int, help="eval seed")
 
-    parser.add_argument("-c", "--ckpt", default="best_ckpt.pth", type=str, help="ckpt for eval")
+    parser.add_argument("-c", "--ckpt", default="best_Yolox559.pth", type=str, help="ckpt for eval")
 
     parser.add_argument(
         "--fp16",
@@ -125,21 +125,23 @@ class Exp(MyExp):
         #输出的文件地址
         self.output_dir = output_dir
         # yolox_l 不用很大的模型
-        self.depth = 1
-        self.width = 1
+        self.depth = 1.33
+        self.width = 1.25
         size = 544
         lrd = 10
         self.max_epoch = 50
         self.warmup_epochs = 10
         self.no_aug_epochs = 10
         self.num_classes = 10
+        self.min_lr_ratio = 0.007
+
         self.input_size = (size, size)
         self.test_size = (size, size)
         self.basic_lr_per_img = 0.01 / (64.0 * lrd)
         # 让最小学习率再小一点，可能能学到东西
-        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_FocalLoss_lrelu".format(size, lrd, self.max_epoch,
-                                                                                   self.warmup_epochs,
-                                                                                   self.no_aug_epochs)
+        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_freeze_backbone_FCCY".format(size, lrd, self.max_epoch,
+                                                                                        self.warmup_epochs,
+                                                                                        self.no_aug_epochs)
     def get_model(self):
         from yolox.utils import freeze_module
         model = super().get_model()

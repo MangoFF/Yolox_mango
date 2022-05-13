@@ -1,7 +1,7 @@
 # YOLOv5 🚀 by Ultralytics, GPL-3.0 license
 """
 """
-from model_service.pytorch_model_service import PTServingBaseService
+#from model_service.pytorch_model_service import PTServingBaseService
 from yolox.exp import Exp as MyExp
 import argparse
 from PIL import Image
@@ -19,8 +19,8 @@ class Exp(MyExp):
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
         self.data_dir="datasets/COCO/"
         # yolox_l 不用很大的模型
-        self.depth = 1
-        self.width = 1
+        self.depth = 1.33
+        self.width = 1.25
         size = 544
         lrd = 10
         self.max_epoch = 50
@@ -67,11 +67,11 @@ def get_model(model_path, **kwargs):
     return predictor
 
 
-class PTVisionService(PTServingBaseService):
-#class PTVisionService:
+#class PTVisionService(PTServingBaseService):
+class PTVisionService:
     def __init__(self, model_name,model_path):
         # 调用父类构造方法
-        super(PTVisionService, self).__init__(model_name,model_path)
+        #super(PTVisionService, self).__init__(model_name,model_path)
         # 调用自定义函数加载模型
         self.model = get_model(model_path)
         # 加载标签
@@ -133,5 +133,5 @@ if __name__=="__main__":
     img = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
     data["images"]=[img]
     data["images"].append("mango")
-    p=PTVisionService(model_name="yolox",model_path="./best_ckpt.pth")
+    p=PTVisionService(model_name="yolox",model_path="./best_Yolox.pth")
     print(p._inference(data))
