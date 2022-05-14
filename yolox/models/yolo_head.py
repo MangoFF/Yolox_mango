@@ -13,7 +13,7 @@ from yolox.utils import bboxes_iou, meshgrid
 
 from .losses import IOUloss,PolyLoss
 from .network_blocks import BaseConv, DWConv
-
+from .dyhead import DyConv,Conv3x3Norm
 
 class YOLOXHead(nn.Module):
     def __init__(
@@ -35,6 +35,17 @@ class YOLOXHead(nn.Module):
         self.n_anchors = 1
         self.num_classes = num_classes
         self.decode_in_inference = True  # for deploy, set to False
+
+        dyhead_tower = []
+        for i in range(6):
+            dyhead_tower.append(
+                DyConv(
+                   256,
+                    256,
+                    conv_func=Conv3x3Norm,
+                )
+            )
+        self.add_module('dyhead_tower', nn.Sequential(*dyhead_tower))
 
         self.cls_convs = nn.ModuleList()
         self.reg_convs = nn.ModuleList()
@@ -141,17 +152,20 @@ class YOLOXHead(nn.Module):
             b.data.fill_(-math.log((1 - prior_prob) / prior_prob))
             conv.bias = torch.nn.Parameter(b.view(-1), requires_grad=True)
 
-    def forward(self, xin, labels=None, imgs=None):
+    def forward(self, xin_dic, labels=None, imgs=None):
         outputs = []
         origin_preds = []
         x_shifts = []
         y_shifts = []
         expanded_strides = []
+        for k,name in enumerate(xin_dic):
+            xin_dic[name]=self.stems[k](xin_dic[name])
+        xin=list(self.dyhead_tower(xin_dic).values())
 
         for k, (cls_conv, reg_conv, stride_this_level, x) in enumerate(
             zip(self.cls_convs, self.reg_convs, self.strides, xin)
         ):
-            x = self.stems[k](x)
+            #x = self.stems[k](x)
             cls_x = x
             reg_x = x
 

@@ -20,7 +20,7 @@ class Exp(MyExp):
     def __init__(self,output_dir):
         super(Exp, self).__init__()
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
-        self.data_dir="datasets/COCO/"
+        self.data_dir="YOLOX/datasets/COCO/"
         #self.data_dir = "datasets/COCO/"
         self.output_dir = output_dir
         # yolox_l 不用很大的模型
@@ -28,8 +28,9 @@ class Exp(MyExp):
         self.width = 1
         size = 544
         lrd = 10
-        self.max_epoch = 64
-        self.warmup_epochs = 10
+        self.warmup_lr = 1e-7
+        self.max_epoch = 65
+        self.warmup_epochs = 5
         self.no_aug_epochs = 10
         self.num_classes = 10
         self.min_lr_ratio = 0.01
@@ -37,7 +38,7 @@ class Exp(MyExp):
         self.input_size = (size, size)
         self.test_size = (size, size)
         self.basic_lr_per_img = 0.01 / (64.0 * lrd)
-        self.eval_interval = 20
+        self.eval_interval = 10
 
     def get_model(self):
         from yolox.utils import freeze_module
@@ -59,16 +60,15 @@ def make_parser():
         help="url used to set up distributed training",
     )
 
-    parser.add_argument("-b", "--batch-size", type=int, default=1, help="batch size")
+    parser.add_argument("-b", "--batch-size", type=int, default=32, help="batch size")
 
     parser.add_argument(
-        "-d", "--devices", type=int, default=1, help="device for training"
+        "-d", "--devices", type=int, default=4, help="device for training"
     )
     parser.add_argument(
         "--resume", default=False, action="store_true", help="resume training"
     )
-    parser.add_argument("-c", "--ckpt", default="ckpt/yolox_l.pth", type=str, help="checkpoint file")
-    parser.add_argument("-bkc", "--backbone_ckpt", default="ckpt/yolov4-p5.pt", type=str, help="checkpoint file")
+    parser.add_argument("-c", "--ckpt", default="YOLOX/ckpt/yolox_l.pth", type=str, help="checkpoint file")
     parser.add_argument(
         "-e",
         "--start_epoch",
@@ -85,7 +85,7 @@ def make_parser():
     parser.add_argument(
         "--fp16",
         dest="fp16",
-        default=True,
+        default=False,
         action="store_true",
         help="Adopting mix precision training.",
     )
