@@ -6,6 +6,7 @@ import torch.nn as nn
 
 from .yolo_head import YOLOXHead
 from .yolo_pafpn import YOLOPAFPN
+from .yolo_fpn import YOLOFPN
 
 
 class YOLOX(nn.Module):
@@ -19,6 +20,7 @@ class YOLOX(nn.Module):
         super().__init__()
         if backbone is None:
             backbone = YOLOPAFPN()
+            #backbone=YOLOFPN()
         if head is None:
             head = YOLOXHead(80)
 

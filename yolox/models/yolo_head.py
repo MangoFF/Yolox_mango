@@ -21,7 +21,7 @@ class YOLOXHead(nn.Module):
         num_classes,
         width=1.0,
         strides=[8, 16, 32],
-        in_channels=[256, 512, 1024],
+        in_channels=[128, 256, 512],
         act="silu",
         depthwise=False,
     ):

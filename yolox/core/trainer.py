@@ -138,9 +138,9 @@ class Trainer:
         # model related init
         torch.cuda.set_device(self.local_rank)
         model = self.exp.get_model()
-        logger.info(
-            "Model Summary: {}".format(get_model_info(model, self.exp.test_size))
-        )
+        # logger.info(
+        #     "Model Summary: {}".format(get_model_info(model, self.exp.test_size))
+        # )
 
         # value of epoch will be set in `resume_train`
         model = self.resume_train(model)

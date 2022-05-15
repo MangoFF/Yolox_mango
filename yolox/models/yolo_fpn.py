@@ -80,5 +80,6 @@ class YOLOFPN(nn.Module):
         x2_in = torch.cat([x2_in, x2], 1)
         out_dark3 = self.out2(x2_in)
 
-        outputs = (out_dark3, out_dark4, x0)
+        #outputs = (out_dark3, out_dark4, x0)
+        outputs = {"p1":out_dark3, "p2":out_dark4, "p3":x0}
         return outputs

@@ -25,8 +25,9 @@ class Exp(MyExp):
         # yolox_l 不用很大的模型
         self.depth = 1
         self.width = 1
-        size = 544
+        size = 512
         lrd = 10
+        self.multiscale_range = 0
         self.warmup_lr = 1e-7
         self.max_epoch = 100
         self.warmup_epochs = 15
@@ -40,8 +41,6 @@ class Exp(MyExp):
         self.eval_interval = 10
 
     def get_model(self):
-        from yolox.utils import freeze_module
-        from yolox.models.yolov4s.yolo import Yolov4s
         model = super().get_model()#backbone=backbone)
         return model
 
