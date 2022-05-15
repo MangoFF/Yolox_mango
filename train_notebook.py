@@ -25,7 +25,7 @@ class Exp(MyExp):
         # yolox_l 不用很大的模型
         self.depth = 1
         self.width = 1
-        size = 512
+        size = 640
         lrd = 10
         self.warmup_lr = 1e-7
         self.max_epoch = 100
