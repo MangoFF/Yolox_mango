@@ -25,10 +25,11 @@ class Exp(MyExp):
         # yolox_l 不用很大的模型
         self.depth = 1
         self.width = 1
-        size = 640
+        size = 512
         lrd = 10
+        self.multiscale_range = 0
         self.warmup_lr = 1e-7
-        self.max_epoch = 100
+        self.max_epoch = 60
         self.warmup_epochs = 3
         self.no_aug_epochs = 15
         self.num_classes = 10
@@ -57,7 +58,7 @@ def make_parser():
         help="url used to set up distributed training",
     )
 
-    parser.add_argument("-b", "--batch-size", type=int, default=32, help="batch size")
+    parser.add_argument("-b", "--batch-size", type=int, default=72, help="batch size")
 
     parser.add_argument(
         "-d", "--devices", type=int, default=4, help="device for training"
