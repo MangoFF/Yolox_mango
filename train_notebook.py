@@ -27,10 +27,9 @@ class Exp(MyExp):
         self.width = 1
         size = 512
         lrd = 10
-        self.multiscale_range = 0
         self.warmup_lr = 1e-7
         self.max_epoch = 100
-        self.warmup_epochs = 15
+        self.warmup_epochs = 3
         self.no_aug_epochs = 15
         self.num_classes = 10
         self.min_lr_ratio = 0.01
@@ -58,7 +57,7 @@ def make_parser():
         help="url used to set up distributed training",
     )
 
-    parser.add_argument("-b", "--batch-size", type=int, default=24, help="batch size")
+    parser.add_argument("-b", "--batch-size", type=int, default=32, help="batch size")
 
     parser.add_argument(
         "-d", "--devices", type=int, default=4, help="device for training"
@@ -85,7 +84,7 @@ def make_parser():
     parser.add_argument(
         "--fp16",
         dest="fp16",
-        default=False,
+        default=True,
         action="store_true",
         help="Adopting mix precision training.",
     )
@@ -100,7 +99,7 @@ def make_parser():
         "-o",
         "--occupy",
         dest="occupy",
-        default=False,
+        default=True,
         action="store_true",
         help="occupy GPU memory first for training.",
     )

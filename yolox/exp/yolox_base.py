@@ -107,7 +107,7 @@ class Exp(BaseExp):
         # nms threshold
         self.nmsthre = 0.65
 
-    def get_model(self,backbone=None,head=None,in_channels = [128, 256, 512]):
+    def get_model(self,backbone=None,head=None,in_channels = [256, 512, 1024]):
         from yolox.models import YOLOX, YOLOPAFPN, YOLOXHead,YOLOFPN
 
         def init_yolo(M):
@@ -118,8 +118,8 @@ class Exp(BaseExp):
 
         if getattr(self, "model", None) is None:
             if backbone is None:
-                #backbone = YOLOPAFPN(self.depth, self.width, in_channels=in_channels, act=self.act)
-                backbone=YOLOFPN()
+                backbone = YOLOPAFPN(self.depth, self.width, in_channels=in_channels, act=self.act)
+                #backbone=YOLOFPN()
             if head is None:
                 head = YOLOXHead(self.num_classes, self.width, in_channels=in_channels, act=self.act)
                 #head = dyhead(self.num_classes, self.width, in_channels=in_channels, act=self.act)
