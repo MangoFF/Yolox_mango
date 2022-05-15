@@ -12,7 +12,6 @@ from yolox.core import Trainer, launch
 from yolox.utils import configure_nccl, configure_omp, get_num_devices
 import os
 from yolox.exp import Exp as MyExp
-from yolox.models import EfficientNet
 class Exp(MyExp):
     """
     set the model detail here,inclue the data,dataaug etc.
@@ -29,9 +28,9 @@ class Exp(MyExp):
         size = 544
         lrd = 10
         self.warmup_lr = 1e-7
-        self.max_epoch = 65
-        self.warmup_epochs = 5
-        self.no_aug_epochs = 10
+        self.max_epoch = 100
+        self.warmup_epochs = 15
+        self.no_aug_epochs = 15
         self.num_classes = 10
         self.min_lr_ratio = 0.01
 
@@ -60,7 +59,7 @@ def make_parser():
         help="url used to set up distributed training",
     )
 
-    parser.add_argument("-b", "--batch-size", type=int, default=32, help="batch size")
+    parser.add_argument("-b", "--batch-size", type=int, default=24, help="batch size")
 
     parser.add_argument(
         "-d", "--devices", type=int, default=4, help="device for training"
@@ -69,6 +68,8 @@ def make_parser():
         "--resume", default=False, action="store_true", help="resume training"
     )
     parser.add_argument("-c", "--ckpt", default="YOLOX/ckpt/yolox_l.pth", type=str, help="checkpoint file")
+    #parser.add_argument("-c", "--ckpt", default="YOLOX_out/taril/epoch_10_ckpt.pth", type=str, help="checkpoint file")
+
     parser.add_argument(
         "-e",
         "--start_epoch",
