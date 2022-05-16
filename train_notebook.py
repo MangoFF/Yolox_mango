@@ -19,18 +19,19 @@ class Exp(MyExp):
     def __init__(self,output_dir):
         super(Exp, self).__init__()
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
-        self.data_dir="YOLOX/datasets/COCO/"
+        self.data_dir="YOLOX/datasets/COCO_playground/"
         #self.data_dir = "datasets/COCO/"
         self.output_dir = output_dir
         # yolox_l 不用很大的模型
+        self.act = "gelu"
         self.depth = 1
         self.width = 1
-        size = 512
+        size = 544
         lrd = 10
         self.multiscale_range = 0
         self.warmup_lr = 1e-7
-        self.max_epoch = 60
-        self.warmup_epochs = 3
+        self.max_epoch = 65
+        self.warmup_epochs = 10
         self.no_aug_epochs = 15
         self.num_classes = 10
         self.min_lr_ratio = 0.01
@@ -58,7 +59,7 @@ def make_parser():
         help="url used to set up distributed training",
     )
 
-    parser.add_argument("-b", "--batch-size", type=int, default=72, help="batch size")
+    parser.add_argument("-b", "--batch-size", type=int, default=96, help="batch size")
 
     parser.add_argument(
         "-d", "--devices", type=int, default=4, help="device for training"
@@ -150,7 +151,7 @@ if __name__ == "__main__":
     exp = Exp(output_dir=args.model)
     # this line merge the input into the exp,by overwrite
     exp.merge(args.opts)
-    args.experiment_name="taril"
+    args.experiment_name="bce-facal-gelu"
 
     num_gpu = get_num_devices() if args.devices is None else args.devices
     assert num_gpu <= get_num_devices()

@@ -11,7 +11,7 @@ import torch.nn.functional as F
 
 from yolox.utils import bboxes_iou, meshgrid
 
-from .losses import IOUloss,PolyLoss
+from .losses import IOUloss,PolyLoss,FocalLoss
 from .network_blocks import BaseConv, DWConv
 from yolox.models.dyheadmmdet import DyHead
 class YOLOXHead(nn.Module):
@@ -44,7 +44,7 @@ class YOLOXHead(nn.Module):
         self.obj_preds = nn.ModuleList()
         self.stems = nn.ModuleList()
         Conv = DWConv if depthwise else BaseConv
-        self.dyhead=DyHead(256,256)
+        #self.dyhead=DyHead(256,256)
 
         for i in range(len(in_channels)):
             self.stems.append(
@@ -126,8 +126,8 @@ class YOLOXHead(nn.Module):
 
         self.use_l1 = False
         self.l1_loss = nn.L1Loss(reduction="none")
-        self.bcewithlog_loss = nn.BCEWithLogitsLoss(reduction="none")
-        self.PolyLoss=PolyLoss(reduction="none")
+        self.bcewithlog_loss =nn.BCEWithLogitsLoss(reduction="none")
+        self.PolyLoss=FocalLoss(reduction="none")
         self.iou_loss = IOUloss(reduction="none")
         self.strides = strides
         self.grids = [torch.zeros(1)] * len(in_channels)
@@ -149,16 +149,16 @@ class YOLOXHead(nn.Module):
         x_shifts = []
         y_shifts = []
         expanded_strides = []
-        for k,x in enumerate(xin):
-            xin[k]=self.stems[k](x)
-            del x
-        xin=self.dyhead(xin)
+        # for k,x in enumerate(xin):
+        #     xin[k]=self.stems[k](x)
+        #     del x
+        # xin=self.dyhead(xin)
 
 
         for k, (cls_conv, reg_conv, stride_this_level, x) in enumerate(
             zip(self.cls_convs, self.reg_convs, self.strides, xin)
         ):
-            #x = self.stems[k](x)
+            x = self.stems[k](x)
             cls_x = x
             reg_x = x
 
