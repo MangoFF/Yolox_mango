@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+<<<<<<< HEAD:train5.py
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 # Copyright (c) Megvii, Inc. and its affiliates.
@@ -42,7 +42,7 @@ class Exp(MyExp):
         self.width = 1
         size = 544
         lrd = 10
-        self.act="relu6"
+        self.act = "gelu"
         self.multiscale_range = 0
         self.warmup_lr = 1e-7
         self.max_epoch = 65
@@ -54,7 +54,7 @@ class Exp(MyExp):
         self.test_size = (size, size)
         self.basic_lr_per_img = 0.01 / (64.0 * lrd)
         # 让最小学习率再小一点，可能能学到东西
-        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_544-65-relu6".format(size, lrd, self.max_epoch,self.warmup_epochs, self.no_aug_epochs)
+        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_544-65-gelu".format(size, lrd, self.max_epoch,self.warmup_epochs, self.no_aug_epochs)
 
     def get_model(self):
         from yolox.utils import freeze_module
@@ -78,7 +78,7 @@ def make_parser():
         type=str,
         help="url used to set up distributed training",
     )
-    parser.add_argument("-b", "--batch-size", type=int, default=64, help="batch size")
+    parser.add_argument("-b", "--batch-size", type=int, default=32, help="batch size")
     parser.add_argument(
         "-d", "--devices", type=int, default=1, help="device for training"
     )
@@ -94,7 +94,7 @@ def make_parser():
         parser.add_argument("-c", "--ckpt", default="/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_l.ckpt", type=str, help="checkpoint file")
         parser.add_argument("--resume", default=False, action="store_true", help="resume training")
     else:
-        model_best_path='obs://chuanhaimangoking939/yolox/ckpt1/'+resum_name+'/last_epoch_ckpt.pth'
+        model_best_path='obs://chuanhaimangoking939/yolox/ckpt5/'+resum_name+'/last_epoch_ckpt.pth'
         mox.file.copy(model_best_path,
                       '/home/ma-user/modelarts/user-job-dir/model/ckpt/last_epoch_ckpt.ckpt')
         parser.add_argument("-c", "--ckpt", default="/home/ma-user/modelarts/user-job-dir/model/ckpt/last_epoch_ckpt.ckpt",type=str, help="checkpoint file")

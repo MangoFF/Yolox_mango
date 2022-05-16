@@ -25,6 +25,16 @@ def get_activation(name="silu", inplace=True):
         module = nn.ReLU6( inplace=inplace)
     elif name == "elu":
         module = nn.ELU(inplace=inplace)
+    elif name == "selu":
+        module = nn.SELU()
+    elif name == "sigmoid":
+        module = nn.Sigmoid()
+    elif name == "prelu":
+        module = nn.PReLU()
+    elif name == "tanh":
+        module = nn.Tanh()
+    elif name == "gelu":
+        module = nn.GELU()
     else:
         raise AttributeError("Unsupported act type: {}".format(name))
     return module
