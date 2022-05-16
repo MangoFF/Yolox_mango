@@ -1,7 +1,7 @@
 # YOLOv5 🚀 by Ultralytics, GPL-3.0 license
 """
 """
-#from model_service.pytorch_model_service import PTServingBaseService
+from model_service.pytorch_model_service import PTServingBaseService
 from yolox.exp import Exp as MyExp
 import argparse
 from PIL import Image
@@ -14,13 +14,15 @@ from yolox.data.datasets import COCO_CLASSES
 from tools.demo import Predictor
 IMAGE_EXT = [".jpg", ".jpeg", ".webp", ".bmp", ".png"]
 class Exp(MyExp):
-    def __init__(self):
+    def __init__(self,):
         super(Exp, self).__init__()
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
-        self.data_dir="datasets/COCO/"
+        # 数据地址
+        self.data_dir = "datasets/COCO/"
+        # 输出的文件地址
         # yolox_l 不用很大的模型
-        self.depth = 1.33
-        self.width = 1.25
+        self.depth = 1
+        self.width = 1
         size = 544
         lrd = 10
         self.max_epoch = 50
@@ -33,9 +35,9 @@ class Exp(MyExp):
         self.test_size = (size, size)
         self.basic_lr_per_img = 0.01 / (64.0 * lrd)
         # 让最小学习率再小一点，可能能学到东西
-        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_FocalLoss_lrelu".format(size, lrd, self.max_epoch,
-                                                                                   self.warmup_epochs,
-                                                                                   self.no_aug_epochs)
+        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_freeze_backbone_FCCY".format(size, lrd, self.max_epoch,
+                                                                                        self.warmup_epochs,
+                                                                                        self.no_aug_epochs)
     def get_model(self):
         from yolox.utils import freeze_module
         model = super().get_model()
@@ -67,11 +69,11 @@ def get_model(model_path, **kwargs):
     return predictor
 
 
-#class PTVisionService(PTServingBaseService):
-class PTVisionService:
+class PTVisionService(PTServingBaseService):
+#class PTVisionService:
     def __init__(self, model_name,model_path):
         # 调用父类构造方法
-        #super(PTVisionService, self).__init__(model_name,model_path)
+        super(PTVisionService, self).__init__(model_name,model_path)
         # 调用自定义函数加载模型
         self.model = get_model(model_path)
         # 加载标签

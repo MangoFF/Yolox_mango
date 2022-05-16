@@ -28,6 +28,7 @@ class Exp(MyExp):
         self.width = 1
         size = 544
         lrd = 10
+        self.multiscale_range = 0
         self.max_epoch = 64
         self.warmup_epochs = 10
         self.no_aug_epochs = 10
@@ -41,8 +42,7 @@ class Exp(MyExp):
 
     def get_model(self):
         from yolox.utils import freeze_module
-        from yolox.models.yolov4s.yolo import Yolov4s
-        model = super().get_model()#backbone=backbone)
+        model = super().get_model()
         return model
 
 def make_parser():
@@ -68,7 +68,6 @@ def make_parser():
         "--resume", default=False, action="store_true", help="resume training"
     )
     parser.add_argument("-c", "--ckpt", default="ckpt/yolox_l.pth", type=str, help="checkpoint file")
-    parser.add_argument("-bkc", "--backbone_ckpt", default="ckpt/yolov4-p5.pt", type=str, help="checkpoint file")
     parser.add_argument(
         "-e",
         "--start_epoch",

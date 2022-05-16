@@ -34,26 +34,26 @@ class Exp(MyExp):
     def __init__(self,output_dir):
         super(Exp, self).__init__()
         # self.data_dir="datasets/COCO/"
-        self.data_dir = "/home/ma-user/modelarts/user-job-dir/model/datasets/COCO/"
+        self.data_dir = "/home/ma-user/modelarts/user-job-dir/model/datasets/COCO_playground/"
         self.output_dir = output_dir
         # 大模型，640，做一个大epoch的实验
-        self.depth = 1.33
-        self.width = 1.25
-        size = 768
+        self.depth = 1
+        self.width = 1
+        size = 544
         lrd = 10
+        self.act="elu"
+        self.multiscale_range = 0
         self.warmup_lr = 1e-7
-        self.max_epoch = 200
+        self.max_epoch = 65
         self.warmup_epochs = 10
-        self.no_aug_epochs = 10
+        self.no_aug_epochs = 15
         self.num_classes = 10
         self.min_lr_ratio = 0.01
-        #self.act="relu"
         self.input_size = (size, size)
         self.test_size = (size, size)
         self.basic_lr_per_img = 0.01 / (64.0 * lrd)
         # 让最小学习率再小一点，可能能学到东西
-        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_768-200epoch".format(size, lrd, self.max_epoch,
-                                                                            self.warmup_epochs, self.no_aug_epochs)
+        self.exp_name = "yolox_l_s{0}_lrd{1}_mp{2}w{3}n{4}_544-65-elu".format(size, lrd, self.max_epoch,self.warmup_epochs, self.no_aug_epochs)
 
     def get_model(self):
         from yolox.utils import freeze_module
@@ -61,8 +61,8 @@ class Exp(MyExp):
         return model
 
 def make_parser():
-    resume = True
-    resum_name = "yolox_l_s768_lrd10_mp200w10n10_768-200epoch"
+    resume = False
+    resum_name = "yolox_l_s640_lrd10_mp200w10n10_640-200epoch"
     parser = argparse.ArgumentParser("YOLOX train parser")
     parser.add_argument("-expn", "--experiment-name", type=str, default=None)
     parser.add_argument("-n", "--name", type=str, default=None, help="model name")
@@ -77,7 +77,7 @@ def make_parser():
         type=str,
         help="url used to set up distributed training",
     )
-    parser.add_argument("-b", "--batch-size", type=int, default=16, help="batch size")
+    parser.add_argument("-b", "--batch-size", type=int, default=64, help="batch size")
     parser.add_argument(
         "-d", "--devices", type=int, default=1, help="device for training"
     )
@@ -90,7 +90,7 @@ def make_parser():
     )
 
     if not resume:
-        parser.add_argument("-c", "--ckpt", default="/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_x.ckpt", type=str, help="checkpoint file")
+        parser.add_argument("-c", "--ckpt", default="/home/ma-user/modelarts/user-job-dir/model/ckpt/yolox_l.ckpt", type=str, help="checkpoint file")
         parser.add_argument("--resume", default=False, action="store_true", help="resume training")
     else:
         model_best_path='obs://chuanhaimangoking939/yolox/ckpt3/'+resum_name+'/last_epoch_ckpt.pth'

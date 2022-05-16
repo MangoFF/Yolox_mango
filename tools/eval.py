@@ -23,7 +23,7 @@ def make_parser():
 
     parser.add_argument("-n", "--name", type=str, default=None, help="model name")
 
-    parser.add_argument("-b", "--batch-size", type=int, default=4, help="batch size")
+    parser.add_argument("-b", "--batch-size", type=int, default=64, help="batch size")
 
     parser.add_argument(
         "-f",
@@ -41,7 +41,7 @@ def make_parser():
 
     parser.add_argument("--seed", default=None, type=int, help="eval seed")
 
-    parser.add_argument("-c", "--ckpt", default="best_Yolox559.pth", type=str, help="ckpt for eval")
+    parser.add_argument("-c", "--ckpt", default="best_ckpt55_495.pth", type=str, help="ckpt for eval")
 
     parser.add_argument(
         "--fp16",
@@ -121,19 +121,19 @@ class Exp(MyExp):
         super(Exp, self).__init__()
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
         #数据地址
-        self.data_dir="datasets/COCO/"
+        self.data_dir="datasets/COCO_playground/"
         #输出的文件地址
         self.output_dir = output_dir
         # yolox_l 不用很大的模型
-        self.depth = 1.33
-        self.width = 1.25
+        self.depth = 1
+        self.width = 1
         size = 544
         lrd = 10
         self.max_epoch = 50
         self.warmup_epochs = 10
         self.no_aug_epochs = 10
         self.num_classes = 10
-        self.min_lr_ratio = 0.007
+        self.min_lr_ratio = 0.01
 
         self.input_size = (size, size)
         self.test_size = (size, size)
