@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 # Copyright (c) Megvii, Inc. and its affiliates.
@@ -164,3 +165,4 @@ if __name__ == "__main__":
         dist_url=dist_url,
         args=(exp, args),
     )
+

@@ -13,15 +13,14 @@ from yolox.utils import bboxes_iou, meshgrid
 
 from .losses import IOUloss,PolyLoss
 from .network_blocks import BaseConv, DWConv
-
-
+from yolox.models.dyheadmmdet import DyHead
 class YOLOXHead(nn.Module):
     def __init__(
         self,
         num_classes,
         width=1.0,
         strides=[8, 16, 32],
-        in_channels=[256, 512, 1024],
+        in_channels=[128, 256, 512],
         act="silu",
         depthwise=False,
     ):
@@ -36,6 +35,8 @@ class YOLOXHead(nn.Module):
         self.num_classes = num_classes
         self.decode_in_inference = True  # for deploy, set to False
 
+      
+
         self.cls_convs = nn.ModuleList()
         self.reg_convs = nn.ModuleList()
         self.cls_preds = nn.ModuleList()
@@ -43,6 +44,7 @@ class YOLOXHead(nn.Module):
         self.obj_preds = nn.ModuleList()
         self.stems = nn.ModuleList()
         Conv = DWConv if depthwise else BaseConv
+        self.dyhead=DyHead(256,256)
 
         for i in range(len(in_channels)):
             self.stems.append(
@@ -147,11 +149,16 @@ class YOLOXHead(nn.Module):
         x_shifts = []
         y_shifts = []
         expanded_strides = []
+        for k,x in enumerate(xin):
+            xin[k]=self.stems[k](x)
+            del x
+        xin=self.dyhead(xin)
+
 
         for k, (cls_conv, reg_conv, stride_this_level, x) in enumerate(
             zip(self.cls_convs, self.reg_convs, self.strides, xin)
         ):
-            x = self.stems[k](x)
+            #x = self.stems[k](x)
             cls_x = x
             reg_x = x
 

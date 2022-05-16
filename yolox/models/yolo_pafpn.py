@@ -25,6 +25,8 @@ class YOLOPAFPN(nn.Module):
     ):
         super().__init__()
         self.backbone = CSPDarknet(depth, width, depthwise=depthwise, act=act)
+        #取代pan使用dyhead
+
         self.in_features = in_features
         self.in_channels = in_channels
         Conv = DWConv if depthwise else BaseConv
@@ -112,5 +114,7 @@ class YOLOPAFPN(nn.Module):
         p_out0 = torch.cat([p_out0, fpn_out0], 1)  # 512->1024/32
         pan_out0 = self.C3_n4(p_out0)  # 1024->1024/32
 
-        outputs = (pan_out2, pan_out1, pan_out0)
+        #outputs = {"p1":pan_out2, "p2":pan_out1, "p3":pan_out0}
+        outputs = [pan_out2, pan_out1,pan_out0]
         return outputs
+        #return out_features

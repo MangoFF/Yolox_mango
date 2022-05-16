@@ -2,6 +2,8 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
+from detectron2.modeling.backbone import Backbone
+
 from .deform import ModulatedDeformConv
 from .dyrelu import h_sigmoid, DYReLU
 
@@ -82,7 +84,7 @@ class DyConv(nn.Module):
         return next_x
 
 
-class DyHead(nn.Module):
+class DyHead(Backbone):
     def __init__(self, cfg, backbone):
         super(DyHead, self).__init__()
         self.cfg = cfg
@@ -101,6 +103,11 @@ class DyHead(nn.Module):
             )
 
         self.add_module('dyhead_tower', nn.Sequential(*dyhead_tower))
+
+        self._out_feature_strides = self.backbone._out_feature_strides
+        self._out_features = list(self._out_feature_strides.keys())
+        self._out_feature_channels = {k: channels for k in self._out_features}
+        self._size_divisibility = list(self._out_feature_strides.values())[-1]
 
     @property
     def size_divisibility(self):
