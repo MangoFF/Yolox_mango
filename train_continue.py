@@ -19,23 +19,22 @@ class Exp(MyExp):
     def __init__(self,output_dir):
         super(Exp, self).__init__()
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
-        self.data_dir="YOLOX/datasets/COCO/"
+        self.data_dir="YOLOX/datasets/COCO_playground/"
         #self.data_dir = "datasets/COCO/"
         self.output_dir = output_dir
         # yolox_l 不用很大的模型
-        self.act = "silu"
-        self.depth = 1.33
-        self.width = 1.25
+        self.depth = 1
+        self.width = 1
         size = 544
         lrd = 10
-        self.multiscale_range = 5
+        self.multiscale_range = 0
         self.warmup_lr = 1e-7
         self.max_epoch = 65
         self.warmup_epochs = 10
         self.no_aug_epochs = 15
         self.num_classes = 10
-        self.min_lr_ratio = 0.05
-        self.save_history_ckpt = False
+        self.min_lr_ratio = 0.01
+
         self.input_size = (size, size)
         self.test_size = (size, size)
         self.basic_lr_per_img = 0.01 / (64.0 * lrd)
@@ -59,17 +58,16 @@ def make_parser():
         help="url used to set up distributed training",
     )
 
-    parser.add_argument("-b", "--batch-size", type=int, default=24, help="batch size")
+    parser.add_argument("-b", "--batch-size", type=int, default=128, help="batch size")
 
     parser.add_argument(
         "-d", "--devices", type=int, default=4, help="device for training"
     )
     parser.add_argument(
-        "--resume", default=False, action="store_true", help="resume training"
+        "--resume", default=True, action="store_true", help="resume training"
     )
-    parser.add_argument("-c", "--ckpt", default="YOLOX/ckpt/yolox_x.pth", type=str, help="checkpoint file")
-    #parser.add_argument("-c", "--ckpt", default="YOLOX_out/yolox-x-baseline/best_ckpt.pth", type=str, help="checkpoint file")
-
+    #parser.add_argument("-c", "--ckpt", default="YOLOX/ckpt/yolox_l.pth", type=str, help="checkpoint file")
+    parser.add_argument("-c", "--ckpt", default="YOLOX_out/Playground/last_epoch_ckpt.pth", type=str, help="checkpoint file")
     parser.add_argument(
         "-e",
         "--start_epoch",
@@ -86,14 +84,14 @@ def make_parser():
     parser.add_argument(
         "--fp16",
         dest="fp16",
-        default=False,
+        default=True,
         action="store_true",
         help="Adopting mix precision training.",
     )
     parser.add_argument(
         "--cache",
         dest="cache",
-        default=True,
+        default=False,
         action="store_true",
         help="Caching imgs to RAM for fast training.",
     )
@@ -151,7 +149,7 @@ if __name__ == "__main__":
     exp = Exp(output_dir=args.model)
     # this line merge the input into the exp,by overwrite
     exp.merge(args.opts)
-    args.experiment_name="yolox-x-baseline-gelu-silu"
+    args.experiment_name="continue"
 
     num_gpu = get_num_devices() if args.devices is None else args.devices
     assert num_gpu <= get_num_devices()
